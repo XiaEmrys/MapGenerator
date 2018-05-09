@@ -16,6 +16,11 @@
 		EC0367C320A1421C00615D12 /* MapGeneratorUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = EC0367C220A1421C00615D12 /* MapGeneratorUITests.m */; };
 		EC0367D320A1460E00615D12 /* MGBasicElement.m in Sources */ = {isa = PBXBuildFile; fileRef = EC0367D220A1460E00615D12 /* MGBasicElement.m */; };
 		EC0367D520A17B0D00615D12 /* Property List.plist in Resources */ = {isa = PBXBuildFile; fileRef = EC0367D420A17B0D00615D12 /* Property List.plist */; };
+		ECF320C420A2907900910B5E /* MGMapUnity.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF320C320A2907900910B5E /* MGMapUnity.m */; };
+		ECF320C720A2909700910B5E /* MGMapRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF320C620A2909700910B5E /* MGMapRegion.m */; };
+		ECF320CB20A2DBE100910B5E /* MGMapProbability.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF320CA20A2DBE100910B5E /* MGMapProbability.m */; };
+		ECF320CF20A2E09A00910B5E /* MGMapObject.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF320CE20A2E09A00910B5E /* MGMapObject.m */; };
+		ECF320D220A2F02000910B5E /* MGMapGrassElement.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF320D120A2F02000910B5E /* MGMapGrassElement.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +60,16 @@
 		EC0367D120A1460E00615D12 /* MGBasicElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGBasicElement.h; sourceTree = "<group>"; };
 		EC0367D220A1460E00615D12 /* MGBasicElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGBasicElement.m; sourceTree = "<group>"; };
 		EC0367D420A17B0D00615D12 /* Property List.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Property List.plist"; sourceTree = "<group>"; };
+		ECF320C220A2907900910B5E /* MGMapUnity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGMapUnity.h; sourceTree = "<group>"; };
+		ECF320C320A2907900910B5E /* MGMapUnity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGMapUnity.m; sourceTree = "<group>"; };
+		ECF320C520A2909700910B5E /* MGMapRegion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGMapRegion.h; sourceTree = "<group>"; };
+		ECF320C620A2909700910B5E /* MGMapRegion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGMapRegion.m; sourceTree = "<group>"; };
+		ECF320C920A2DBE100910B5E /* MGMapProbability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGMapProbability.h; sourceTree = "<group>"; };
+		ECF320CA20A2DBE100910B5E /* MGMapProbability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGMapProbability.m; sourceTree = "<group>"; };
+		ECF320CD20A2E09A00910B5E /* MGMapObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGMapObject.h; sourceTree = "<group>"; };
+		ECF320CE20A2E09A00910B5E /* MGMapObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGMapObject.m; sourceTree = "<group>"; };
+		ECF320D020A2F02000910B5E /* MGMapGrassElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGMapGrassElement.h; sourceTree = "<group>"; };
+		ECF320D120A2F02000910B5E /* MGMapGrassElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGMapGrassElement.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,11 +155,61 @@
 		EC0367D020A1455500615D12 /* MapGenerator */ = {
 			isa = PBXGroup;
 			children = (
-				EC0367D120A1460E00615D12 /* MGBasicElement.h */,
-				EC0367D220A1460E00615D12 /* MGBasicElement.m */,
+				ECF320C820A2DBCB00910B5E /* Probability */,
+				ECF320CC20A2E07000910B5E /* Base */,
+				ECF320BF20A28F8300910B5E /* Region */,
 				EC0367D420A17B0D00615D12 /* Property List.plist */,
 			);
 			path = MapGenerator;
+			sourceTree = "<group>";
+		};
+		ECF320BF20A28F8300910B5E /* Region */ = {
+			isa = PBXGroup;
+			children = (
+				ECF320C520A2909700910B5E /* MGMapRegion.h */,
+				ECF320C620A2909700910B5E /* MGMapRegion.m */,
+				ECF320C020A2900100910B5E /* Unity */,
+			);
+			path = Region;
+			sourceTree = "<group>";
+		};
+		ECF320C020A2900100910B5E /* Unity */ = {
+			isa = PBXGroup;
+			children = (
+				ECF320C220A2907900910B5E /* MGMapUnity.h */,
+				ECF320C320A2907900910B5E /* MGMapUnity.m */,
+				ECF320C120A2904A00910B5E /* Element */,
+			);
+			path = Unity;
+			sourceTree = "<group>";
+		};
+		ECF320C120A2904A00910B5E /* Element */ = {
+			isa = PBXGroup;
+			children = (
+				EC0367D120A1460E00615D12 /* MGBasicElement.h */,
+				EC0367D220A1460E00615D12 /* MGBasicElement.m */,
+				ECF320D020A2F02000910B5E /* MGMapGrassElement.h */,
+				ECF320D120A2F02000910B5E /* MGMapGrassElement.m */,
+			);
+			path = Element;
+			sourceTree = "<group>";
+		};
+		ECF320C820A2DBCB00910B5E /* Probability */ = {
+			isa = PBXGroup;
+			children = (
+				ECF320C920A2DBE100910B5E /* MGMapProbability.h */,
+				ECF320CA20A2DBE100910B5E /* MGMapProbability.m */,
+			);
+			path = Probability;
+			sourceTree = "<group>";
+		};
+		ECF320CC20A2E07000910B5E /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				ECF320CD20A2E09A00910B5E /* MGMapObject.h */,
+				ECF320CE20A2E09A00910B5E /* MGMapObject.m */,
+			);
+			path = Base;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,10 +343,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ECF320C720A2909700910B5E /* MGMapRegion.m in Sources */,
+				ECF320CF20A2E09A00910B5E /* MGMapObject.m in Sources */,
 				EC0367A520A1421B00615D12 /* ViewController.m in Sources */,
+				ECF320C420A2907900910B5E /* MGMapUnity.m in Sources */,
 				EC0367AD20A1421C00615D12 /* main.m in Sources */,
+				ECF320CB20A2DBE100910B5E /* MGMapProbability.m in Sources */,
 				EC0367A220A1421B00615D12 /* AppDelegate.m in Sources */,
 				EC0367D320A1460E00615D12 /* MGBasicElement.m in Sources */,
+				ECF320D220A2F02000910B5E /* MGMapGrassElement.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
