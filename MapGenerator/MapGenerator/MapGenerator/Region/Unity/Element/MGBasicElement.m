@@ -10,6 +10,10 @@
 #import "MGMapProbability.h"
 
 #import "MGMapGrassElement.h"
+#import "MGMapDirtElement.h"
+#import "MGMapSandElement.h"
+#import "MGMapWaterElement.h"
+#import "MGMapSnowElement.h"
 
 static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas";
 
@@ -18,7 +22,14 @@ static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas
 @property (nonatomic, assign) CGFloat latitude;     // 纬度
 @property (nonatomic, assign) CGFloat longitude;    // 经度
 
-
+// 北部概率模型
+@property (nonatomic, strong) MGElementProbability *northProbability;
+// 南部概率模型
+@property (nonatomic, strong) MGElementProbability *southProbability;
+// 西部概率模型
+@property (nonatomic, strong) MGElementProbability *westProbability;
+// 东部概率模型
+@property (nonatomic, strong) MGElementProbability *eastProbability;
 
 @end
 
@@ -47,50 +58,81 @@ static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas
     
     ElementType curType = [self typeWithProbability:probability];
 
-    
     MGBasicElement *element;
     
-    element = [MGMapGrassElement mapWithCoordinate:coordinate probability:probability];
-    // 根据四个方向的海拔上升概率，确定当前海拔上升概率
-    MGProbability altitudeRiseBase = 1;
-    NSUInteger altitudeRiseBaseIndexCount = 0;
-    
-    if (nil != probability.northProbability) {
-        altitudeRiseBase *= probability.northProbability.altitudeRise;
-        altitudeRiseBaseIndexCount++;
+    switch (curType) {
+        case ElementTypeGrass:
+            //
+            element = [MGMapGrassElement elementWithProbability:probability];
+            break;
+        case ElementTypeDirt:
+            //
+            element = [MGMapDirtElement elementWithProbability:probability];
+            break;
+        case ElementTypeSand:
+            //
+            element = [MGMapSandElement elementWithProbability:probability];
+            break;
+        case ElementTypeWater:
+            //
+            element = [MGMapWaterElement elementWithProbability:probability];
+            break;
+        case ElementTypeSnow:
+            //
+            element = [MGMapSnowElement elementWithProbability:probability];
+            break;
+        default:
+            break;
     }
-    if (nil != probability.southProbability) {
-        altitudeRiseBase *= probability.southProbability.altitudeRise;
-        altitudeRiseBaseIndexCount++;
-    }
-    if (nil != probability.westProbability) {
-        altitudeRiseBase *= probability.westProbability.altitudeRise;
-        altitudeRiseBaseIndexCount++;
-    }
-    if (nil != probability.eastProbability) {
-        altitudeRiseBase *= probability.eastProbability.altitudeRise;
-        altitudeRiseBaseIndexCount++;
-    }
-    
-    // 计算得出的海拔上升概率
-    MGProbability altitudeRiseTarget = pow(altitudeRiseBase, altitudeRiseBaseIndexCount);
-//    probability.northProbability.altitudeRise;
-    
-    // 计算海拔下降概率
-    
-    // 计算温度上升概率，如果海拔上升，概率值加1
-    
-    // 计算温度下降概率，如果海拔下降，概率值减1
-    
     
     element.latitude = coordinate.x;
     element.longitude = coordinate.y;
     
-    if (nil != probability) {
-        
-    }
+    // 存储本地
     
     return element;
+    
+//    element = [MGMapGrassElement mapWithCoordinate:coordinate probability:probability];
+//    // 根据四个方向的海拔上升概率，确定当前海拔上升概率
+//    MGProbability altitudeRiseBase = 1;
+//    NSUInteger altitudeRiseBaseIndexCount = 0;
+//
+//    if (nil != probability.northProbability) {
+//        altitudeRiseBase *= probability.northProbability.altitudeRise;
+//        altitudeRiseBaseIndexCount++;
+//    }
+//    if (nil != probability.southProbability) {
+//        altitudeRiseBase *= probability.southProbability.altitudeRise;
+//        altitudeRiseBaseIndexCount++;
+//    }
+//    if (nil != probability.westProbability) {
+//        altitudeRiseBase *= probability.westProbability.altitudeRise;
+//        altitudeRiseBaseIndexCount++;
+//    }
+//    if (nil != probability.eastProbability) {
+//        altitudeRiseBase *= probability.eastProbability.altitudeRise;
+//        altitudeRiseBaseIndexCount++;
+//    }
+//
+//    // 计算得出的海拔上升概率
+//    MGProbability altitudeRiseTarget = pow(altitudeRiseBase, altitudeRiseBaseIndexCount);
+////    probability.northProbability.altitudeRise;
+//
+//    // 计算海拔下降概率
+//
+//    // 计算温度上升概率，如果海拔上升，概率值加1
+//
+//    // 计算温度下降概率，如果海拔下降，概率值减1
+//
+//
+//    element.latitude = coordinate.x;
+//    element.longitude = coordinate.y;
+//
+//    if (nil != probability) {
+//
+//    }
+//
+//    return element;
 }
 
 + (ElementType)typeWithProbability:(MGMapProbability *)probability {
@@ -155,5 +197,35 @@ static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas
         return [self typeWithProbability:probability];
     }
 }
+
++ (instancetype)elementWithProbability:(MGMapProbability *)probability {
+    
+    MGBasicElement *element = [[self alloc] init];
+    
+    if (nil != probability.northProbability) {
+        
+        element.northProbability = probability.northProbability;
+    }
+    if (nil != probability.southProbability) {
+        element.southProbability = probability.southProbability;
+    }
+    if (nil != probability.westProbability) {
+        element.westProbability = probability.westProbability;
+    }
+    if (nil != probability.eastProbability) {
+        element.eastProbability = probability.eastProbability;
+    }
+    return element;
+}
+
+// 通过概率计算海拔上升还是下降
+// 通过海拔平均值，根据海拔上升下降结果，得出当前海拔高度
+
+// 通过概率计算温度上升还是下降
+// 通过温度平均值，根据温度上升下降结果，得出当前温度
+
+// 通过概率计算湿度上升还是下降
+// 通过湿度平均值，根据湿度上升下降结果，得出当前湿度
+
 
 @end

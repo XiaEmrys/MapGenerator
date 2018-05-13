@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1733769F20A73DE200758168 /* MGMapDirtElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1733769E20A73DE200758168 /* MGMapDirtElement.m */; };
+		173376A220A73E0300758168 /* MGMapSandElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 173376A120A73E0300758168 /* MGMapSandElement.m */; };
+		173376A520A73E2E00758168 /* MGMapWaterElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 173376A420A73E2E00758168 /* MGMapWaterElement.m */; };
+		173376A820A73E4C00758168 /* MGMapSnowElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 173376A720A73E4C00758168 /* MGMapSnowElement.m */; };
 		EC0367A220A1421B00615D12 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EC0367A120A1421B00615D12 /* AppDelegate.m */; };
 		EC0367A520A1421B00615D12 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC0367A420A1421B00615D12 /* ViewController.m */; };
 		EC0367A720A1421C00615D12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC0367A620A1421C00615D12 /* Assets.xcassets */; };
@@ -41,6 +45,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1733769D20A73DE200758168 /* MGMapDirtElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGMapDirtElement.h; sourceTree = "<group>"; };
+		1733769E20A73DE200758168 /* MGMapDirtElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGMapDirtElement.m; sourceTree = "<group>"; };
+		173376A020A73E0300758168 /* MGMapSandElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGMapSandElement.h; sourceTree = "<group>"; };
+		173376A120A73E0300758168 /* MGMapSandElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGMapSandElement.m; sourceTree = "<group>"; };
+		173376A320A73E2E00758168 /* MGMapWaterElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGMapWaterElement.h; sourceTree = "<group>"; };
+		173376A420A73E2E00758168 /* MGMapWaterElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGMapWaterElement.m; sourceTree = "<group>"; };
+		173376A620A73E4C00758168 /* MGMapSnowElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGMapSnowElement.h; sourceTree = "<group>"; };
+		173376A720A73E4C00758168 /* MGMapSnowElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGMapSnowElement.m; sourceTree = "<group>"; };
 		EC03679D20A1421B00615D12 /* MapGenerator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapGenerator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC0367A020A1421B00615D12 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EC0367A120A1421B00615D12 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -190,6 +202,14 @@
 				EC0367D220A1460E00615D12 /* MGBasicElement.m */,
 				ECF320D020A2F02000910B5E /* MGMapGrassElement.h */,
 				ECF320D120A2F02000910B5E /* MGMapGrassElement.m */,
+				1733769D20A73DE200758168 /* MGMapDirtElement.h */,
+				1733769E20A73DE200758168 /* MGMapDirtElement.m */,
+				173376A020A73E0300758168 /* MGMapSandElement.h */,
+				173376A120A73E0300758168 /* MGMapSandElement.m */,
+				173376A320A73E2E00758168 /* MGMapWaterElement.h */,
+				173376A420A73E2E00758168 /* MGMapWaterElement.m */,
+				173376A620A73E4C00758168 /* MGMapSnowElement.h */,
+				173376A720A73E4C00758168 /* MGMapSnowElement.m */,
 			);
 			path = Element;
 			sourceTree = "<group>";
@@ -348,7 +368,11 @@
 				EC0367A520A1421B00615D12 /* ViewController.m in Sources */,
 				ECF320C420A2907900910B5E /* MGMapUnity.m in Sources */,
 				EC0367AD20A1421C00615D12 /* main.m in Sources */,
+				173376A520A73E2E00758168 /* MGMapWaterElement.m in Sources */,
+				173376A220A73E0300758168 /* MGMapSandElement.m in Sources */,
 				ECF320CB20A2DBE100910B5E /* MGMapProbability.m in Sources */,
+				1733769F20A73DE200758168 /* MGMapDirtElement.m in Sources */,
+				173376A820A73E4C00758168 /* MGMapSnowElement.m in Sources */,
 				EC0367A220A1421B00615D12 /* AppDelegate.m in Sources */,
 				EC0367D320A1460E00615D12 /* MGBasicElement.m in Sources */,
 				ECF320D220A2F02000910B5E /* MGMapGrassElement.m in Sources */,

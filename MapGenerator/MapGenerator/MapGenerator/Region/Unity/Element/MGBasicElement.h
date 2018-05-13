@@ -24,6 +24,8 @@ typedef NS_ENUM(NSUInteger, ElementType) {
 //+ (instancetype)elementWithCoordinate:(CGPoint)coordinate;
 //+ (instancetype)elementWithCoordinate:(CGPoint)coordinate probability:(MGMapProbability *)probability;
 
++ (instancetype)elementWithProbability:(MGMapProbability *)probability;
+
 @property (readonly) ElementType elementType;
 
 // 温度
@@ -34,6 +36,6 @@ typedef NS_ENUM(NSUInteger, ElementType) {
 @property (readonly) CGFloat humidity;
 
 // 元素颜色
-@property (readonly) NSString *colorHexValue;
+@property (readonly) NSUInteger colorHexValue;
 
 @end

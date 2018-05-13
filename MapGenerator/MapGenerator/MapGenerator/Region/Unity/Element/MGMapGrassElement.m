@@ -10,4 +10,21 @@
 
 @implementation MGMapGrassElement
 
++ (instancetype)elementWithProbability:(MGMapProbability *)probability {
+    
+    MGMapGrassElement *grassElement = [[self alloc] init];
+    
+    
+    
+    return grassElement;
+}
+
+- (ElementType)elementType {
+    return ElementTypeGrass;
+}
+
+- (NSUInteger)colorHexValue {
+    return 0X7CFC00;
+}
+
 @end
