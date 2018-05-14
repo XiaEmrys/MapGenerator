@@ -17,10 +17,37 @@
 
 static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas";
 
+// 海拔
+typedef NS_ENUM(NSUInteger, ElementAltitudeTendency) {
+    ElementAltitudeRise         // 上升
+    ,ElementAltitudeDecline     // 下降
+    ,ElementAltitudeInvariable  // 不变
+};
+// 温度
+typedef NS_ENUM(NSUInteger, ElementTemperatureTendency) {
+    ElementTemperatureRise         // 上升
+    ,ElementTemperatureDecline     // 下降
+    ,ElementTemperatureInvariable  // 不变
+};
+// 湿度
+typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
+    ElementHumidityRise         // 上升
+    ,ElementHumidityDecline     // 下降
+    ,ElementHumidityInvariable  // 不变
+};
+
 @interface MGBasicElement ()
 
 @property (nonatomic, assign) CGFloat latitude;     // 纬度
 @property (nonatomic, assign) CGFloat longitude;    // 经度
+
+// 海拔
+@property (nonatomic, assign) CGFloat altitude;
+// 温度
+@property (nonatomic, assign) CGFloat temperature;
+// 湿度
+@property (nonatomic, assign) CGFloat humidity;
+
 
 // 北部概率模型
 @property (nonatomic, strong) MGElementProbability *northProbability;
@@ -50,11 +77,11 @@ static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas
 }
 + (instancetype)mapWithCoordinate:(CGPoint)coordinate probability:(MGMapProbability *)probability {
     
-    
-    
-    if (nil == probability) {
-        return [MGMapGrassElement mapWithCoordinate:coordinate probability:probability];
-    }
+    // 根据坐标取四个方向的元素模型做平均值计算，求海拔、温度、湿度等数据
+    // 如果四个方向均没有数据记录，即所有数据初始化时，设置默认参数
+    CGFloat altitude = 200;     // 海拔
+    CGFloat temperature = 20;   // 温度
+    CGFloat humidity = 40;      // 湿度
     
     ElementType curType = [self typeWithProbability:probability];
 
@@ -88,110 +115,53 @@ static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas
     element.latitude = coordinate.x;
     element.longitude = coordinate.y;
     
+    // 海拔上升下降趋势
+    ElementAltitudeTendency altitudeTendency = [self altitudeTendencyRise:probability.averageProbability.altitudeRise decline:probability.averageProbability.altitudeDecline];
+    // 温度上升下降趋势
+    ElementTemperatureTendency temperatureTendency;
+    // 湿度上升下降趋势
+    ElementHumidityTendency humidityTendency = [self humidityTendencyRise:probability.averageProbability.humidityRise decline:probability.averageProbability.humidityDecline];
+    
+    switch (altitudeTendency) {
+        case ElementAltitudeRise:
+            // 海拔升高，影响温度升高概率-1，温度降低概率+1
+            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise-1 decline:probability.averageProbability.temperatureDecline+1];
+            break;
+        case ElementAltitudeDecline:
+            // 海拔降低，影响温度升高概率+1，温度降低概率-1
+            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise+1 decline:probability.averageProbability.temperatureDecline-1];
+            break;
+        default:
+            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise decline:probability.averageProbability.temperatureDecline];
+            break;
+    }
+    
+    element.altitude = [self altitudeWithTendency:altitudeTendency average:altitude];
+    element.temperature = [self temperatureWithTendency:temperatureTendency average:temperature];
+    element.humidity = [self humidityWithTendency:humidityTendency average:humidity];
+    
     // 存储本地
     
     return element;
-    
-//    element = [MGMapGrassElement mapWithCoordinate:coordinate probability:probability];
-//    // 根据四个方向的海拔上升概率，确定当前海拔上升概率
-//    MGProbability altitudeRiseBase = 1;
-//    NSUInteger altitudeRiseBaseIndexCount = 0;
-//
-//    if (nil != probability.northProbability) {
-//        altitudeRiseBase *= probability.northProbability.altitudeRise;
-//        altitudeRiseBaseIndexCount++;
-//    }
-//    if (nil != probability.southProbability) {
-//        altitudeRiseBase *= probability.southProbability.altitudeRise;
-//        altitudeRiseBaseIndexCount++;
-//    }
-//    if (nil != probability.westProbability) {
-//        altitudeRiseBase *= probability.westProbability.altitudeRise;
-//        altitudeRiseBaseIndexCount++;
-//    }
-//    if (nil != probability.eastProbability) {
-//        altitudeRiseBase *= probability.eastProbability.altitudeRise;
-//        altitudeRiseBaseIndexCount++;
-//    }
-//
-//    // 计算得出的海拔上升概率
-//    MGProbability altitudeRiseTarget = pow(altitudeRiseBase, altitudeRiseBaseIndexCount);
-////    probability.northProbability.altitudeRise;
-//
-//    // 计算海拔下降概率
-//
-//    // 计算温度上升概率，如果海拔上升，概率值加1
-//
-//    // 计算温度下降概率，如果海拔下降，概率值减1
-//
-//
-//    element.latitude = coordinate.x;
-//    element.longitude = coordinate.y;
-//
-//    if (nil != probability) {
-//
-//    }
-//
-//    return element;
 }
 
 + (ElementType)typeWithProbability:(MGMapProbability *)probability {
     
-    // 记录共有几个方向的元素概率对象
-    NSUInteger elementProbabilityCount = 0;
-    // 草元素概率基数
-    MGProbability grassProbabilityBase = 1;
-    // 泥土元素概率基数
-    MGProbability dirtProbabilityBase = 1;
-    // 沙子概率基数
-    MGProbability sandProbabilityBase = 1;
-    // 水元素概率基数
-    MGProbability waterProbabilityBase = 1;
-    // 雪元素概率基数
-    MGProbability snowProbabilityBase = 1;
-    
-    if (nil != probability.northProbability) {
-        elementProbabilityCount++;
-        grassProbabilityBase *= probability.northProbability.grassProbability;
-        dirtProbabilityBase *= probability.northProbability.grassProbability;
-        sandProbabilityBase *= probability.northProbability.grassProbability;
-        waterProbabilityBase *= probability.northProbability.grassProbability;
-        snowProbabilityBase *= probability.northProbability.grassProbability;
-    }
-    if (nil != probability.southProbability) {
-        elementProbabilityCount++;
-        grassProbabilityBase *= probability.southProbability.grassProbability;
-        dirtProbabilityBase *= probability.southProbability.grassProbability;
-        sandProbabilityBase *= probability.southProbability.grassProbability;
-        waterProbabilityBase *= probability.southProbability.grassProbability;
-        snowProbabilityBase *= probability.southProbability.grassProbability;
-    }
-    if (nil != probability.westProbability) {
-        elementProbabilityCount++;
-        grassProbabilityBase *= probability.westProbability.grassProbability;
-        dirtProbabilityBase *= probability.westProbability.grassProbability;
-        sandProbabilityBase *= probability.westProbability.grassProbability;
-        waterProbabilityBase *= probability.westProbability.grassProbability;
-        snowProbabilityBase *= probability.westProbability.grassProbability;
-    }
-    if (nil != probability.eastProbability) {
-        elementProbabilityCount++;
-        grassProbabilityBase *= probability.eastProbability.grassProbability;
-        dirtProbabilityBase *= probability.eastProbability.grassProbability;
-        sandProbabilityBase *= probability.eastProbability.grassProbability;
-        waterProbabilityBase *= probability.eastProbability.grassProbability;
-        snowProbabilityBase *= probability.eastProbability.grassProbability;
-    }
-    
-    if (arc4random_uniform(100) < pow(grassProbabilityBase, elementProbabilityCount)) {
+    if (nil == probability) {
         return ElementTypeGrass;
-    } else if (arc4random_uniform(100) < pow(dirtProbabilityBase, elementProbabilityCount)) {
+    }
+    
+    MGElementProbability *averageProbability = probability.averageProbability;
+    
+    if (arc4random_uniform(100) < averageProbability.grassProbability) {
+        return ElementTypeGrass;
+    } else if (arc4random_uniform(100) < averageProbability.dirtProbability) {
         return ElementTypeDirt;
-    } else if (arc4random_uniform(100) < pow(sandProbabilityBase, elementProbabilityCount)) {
+    } else if (arc4random_uniform(100) < averageProbability.sandProbability) {
         return ElementTypeSand;
-    } else if (arc4random_uniform(100) < pow(waterProbabilityBase, elementProbabilityCount)) {
+    } else if (arc4random_uniform(100) < averageProbability.waterProbability) {
         return ElementTypeWater;
-    } else if (arc4random_uniform(100) < pow(snowProbabilityBase, elementProbabilityCount)) {
+    } else if (arc4random_uniform(100) < averageProbability.snowProbability) {
         return ElementTypeSnow;
     } else {
         return [self typeWithProbability:probability];
@@ -203,29 +173,110 @@ static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas
     MGBasicElement *element = [[self alloc] init];
     
     if (nil != probability.northProbability) {
-        
-        element.northProbability = probability.northProbability;
+        element.southProbability = probability.northProbability;
+    } else {
+        element.southProbability = probability.averageProbability;
     }
     if (nil != probability.southProbability) {
-        element.southProbability = probability.southProbability;
+        element.northProbability = probability.southProbability;
+    } else {
+        element.northProbability = probability.averageProbability;
     }
     if (nil != probability.westProbability) {
-        element.westProbability = probability.westProbability;
+        element.eastProbability = probability.westProbability;
+    } else {
+        element.eastProbability = probability.averageProbability;
     }
     if (nil != probability.eastProbability) {
-        element.eastProbability = probability.eastProbability;
+        element.westProbability = probability.eastProbability;
+    } else {
+        element.westProbability = probability.averageProbability;
     }
+    
     return element;
 }
 
 // 通过概率计算海拔上升还是下降
++ (ElementAltitudeTendency)altitudeTendencyRise:(MGProbability)rise decline:(MGProbability)decline {
+    
+    if (arc4random_uniform(100) < rise) {
+        return ElementAltitudeRise;
+    } else if (arc4random_uniform(100) < decline) {
+        return ElementAltitudeDecline;
+    } else {
+        return ElementAltitudeInvariable;
+    }
+}
 // 通过海拔平均值，根据海拔上升下降结果，得出当前海拔高度
++ (CGFloat)altitudeWithTendency:(ElementAltitudeTendency)tendency average:(CGFloat)average {
+    
+    switch (tendency) {
+        case ElementAltitudeRise:
+            return average+0.01;
+            break;
+        case ElementAltitudeDecline:
+            return average-0.01;
+            break;
+        default:
+            return average;
+            break;
+    }
+}
 
 // 通过概率计算温度上升还是下降
++ (ElementTemperatureTendency)temperatureTendencyRise:(MGProbability)rise decline:(MGProbability)decline {
+    
+    if (arc4random_uniform(100) < rise) {
+        return ElementTemperatureRise;
+    } else if (arc4random_uniform(100) < decline) {
+        return ElementTemperatureDecline;
+    } else {
+        return ElementTemperatureInvariable;
+    }
+}
+
 // 通过温度平均值，根据温度上升下降结果，得出当前温度
++ (CGFloat)temperatureWithTendency:(ElementTemperatureTendency)tendency average:(CGFloat)average {
+    
+    switch (tendency) {
+        case ElementTemperatureRise:
+            return average+0.01;
+            break;
+        case ElementTemperatureDecline:
+            return average-0.01;
+            break;
+        default:
+            return average;
+            break;
+    }
+}
 
 // 通过概率计算湿度上升还是下降
-// 通过湿度平均值，根据湿度上升下降结果，得出当前湿度
++ (ElementHumidityTendency)humidityTendencyRise:(MGProbability)rise decline:(MGProbability)decline {
+    
+    if (arc4random_uniform(100) < rise) {
+        return ElementHumidityRise;
+    } else if (arc4random_uniform(100) < decline) {
+        return ElementHumidityDecline;
+    } else {
+        return ElementHumidityInvariable;
+    }
+}
 
+// 通过湿度平均值，根据湿度上升下降结果，得出当前湿度
++ (CGFloat)humidityWithTendency:(ElementHumidityTendency)tendency average:(CGFloat)average {
+    
+    switch (tendency) {
+        case ElementHumidityRise:
+            return average+0.01;
+            break;
+        case ElementHumidityDecline:
+            return average-0.01;
+            break;
+        default:
+            return average;
+            break;
+    }
+}
 
 @end

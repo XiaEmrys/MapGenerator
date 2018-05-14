@@ -14,15 +14,15 @@ typedef u_short MGProbability;
 
 + (instancetype)elementProbability;
 
-// 温度上升概率
-@property (nonatomic, assign) MGProbability temperatureRise;
-// 温度下降概率
-@property (nonatomic, assign) MGProbability temperatureDecline;
-
 // 海拔上升概率
 @property (nonatomic, assign) MGProbability altitudeRise;
 // 海拔下降概率
 @property (nonatomic, assign) MGProbability altitudeDecline;
+
+// 温度上升概率
+@property (nonatomic, assign) MGProbability temperatureRise;
+// 温度下降概率
+@property (nonatomic, assign) MGProbability temperatureDecline;
 
 // 湿度上升概率
 @property (nonatomic, assign) MGProbability humidityRise;
@@ -56,5 +56,8 @@ typedef u_short MGProbability;
 @property (nonatomic, strong) MGElementProbability *westProbability;
 // 东部概率模型
 @property (nonatomic, strong) MGElementProbability *eastProbability;
+
+// 概率平均值对象模型
+@property (readonly) MGElementProbability *averageProbability;
 
 @end

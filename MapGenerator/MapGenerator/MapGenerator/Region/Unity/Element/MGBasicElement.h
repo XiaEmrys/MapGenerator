@@ -28,10 +28,10 @@ typedef NS_ENUM(NSUInteger, ElementType) {
 
 @property (readonly) ElementType elementType;
 
-// 温度
-@property (readonly) CGFloat temperature;
 // 海拔
 @property (readonly) CGFloat altitude;
+// 温度
+@property (readonly) CGFloat temperature;
 // 湿度
 @property (readonly) CGFloat humidity;
 

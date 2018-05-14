@@ -10,14 +10,14 @@
 
 @implementation MGMapGrassElement
 
-+ (instancetype)elementWithProbability:(MGMapProbability *)probability {
-    
-    MGMapGrassElement *grassElement = [[self alloc] init];
-    
-    
-    
-    return grassElement;
-}
+//+ (instancetype)elementWithProbability:(MGMapProbability *)probability {
+//    
+//    MGMapGrassElement *grassElement = [[self alloc] init];
+//    
+//    
+//    
+//    return grassElement;
+//}
 
 - (ElementType)elementType {
     return ElementTypeGrass;
