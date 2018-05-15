@@ -8,6 +8,8 @@
 
 #import "MGMapUnity.h"
 
+static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas";
+
 @implementation MGMapUnity
 
 + (instancetype)unityWithCoordinate:(CGPoint)coordinate {
@@ -27,5 +29,24 @@
     
     return unity;
 }
+
+
+// 根据坐标点取概率模型
+- (MGMapProbability *)probabilityWithCoordinate:(CGPoint)coordinate {
+    return nil;
+}
+// 根据坐标点取海拔
+- (CGFloat)averageAltitudeWithCoordinate:(CGPoint)coordinate {
+    return 0;
+}
+// 根据坐标点取温度
+- (CGFloat)averageTemperatureWithCoordinate:(CGPoint)coordinate {
+    return 0;
+}
+// 根据坐标点取湿度
+- (CGFloat)averageHumidityWithCoordinate:(CGPoint)coordinate {
+    return 0;
+}
+
 
 @end

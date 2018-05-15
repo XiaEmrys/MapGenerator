@@ -18,13 +18,21 @@ typedef NS_ENUM(NSUInteger, ElementType) {
     ,ElementTypeSnow
 };
 
+@class MGMapUnity;
 @class MGMapProbability;
 @interface MGBasicElement : MGMapObject
 
-//+ (instancetype)elementWithCoordinate:(CGPoint)coordinate;
-//+ (instancetype)elementWithCoordinate:(CGPoint)coordinate probability:(MGMapProbability *)probability;
+// 取数据
++ (instancetype)elementWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity;
+// 生成数据
++ (instancetype)createWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity;
+
++ (instancetype)elementWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity probability:(MGMapProbability *)probability;
 
 + (instancetype)elementWithProbability:(MGMapProbability *)probability;
+
+// 元素所属
+@property (readonly) MGMapUnity *unity;
 
 @property (readonly) ElementType elementType;
 

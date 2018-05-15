@@ -9,13 +9,13 @@
 #import "MGBasicElement.h"
 #import "MGMapProbability.h"
 
+#import "MGMapUnity.h"
+
 #import "MGMapGrassElement.h"
 #import "MGMapDirtElement.h"
 #import "MGMapSandElement.h"
 #import "MGMapWaterElement.h"
 #import "MGMapSnowElement.h"
-
-static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas";
 
 // 海拔
 typedef NS_ENUM(NSUInteger, ElementAltitudeTendency) {
@@ -36,7 +36,9 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
     ,ElementHumidityInvariable  // 不变
 };
 
-@interface MGBasicElement ()
+@interface MGBasicElement () <NSCoding>
+
+@property (nonatomic, strong) MGMapUnity *unity;
 
 @property (nonatomic, assign) CGFloat latitude;     // 纬度
 @property (nonatomic, assign) CGFloat longitude;    // 经度
@@ -62,20 +64,87 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
 
 @implementation MGBasicElement
 
-+ (instancetype)mapWithCoordinate:(CGPoint)coordinate {
++ (instancetype)elementWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity {
     
-    // 先在本地存储取数据，没有的时候创建
-    // 假设有，直接取出来
-    
-    // 假设没有
-            // 取四个方向的元素的概率对象
-                // 假设四个方向都没有，概率对象传空
+    // 取数据，有则直接返回，没有则返回nil
     
     return [self mapWithCoordinate:coordinate probability:nil];
     
     return nil;
 }
-+ (instancetype)mapWithCoordinate:(CGPoint)coordinate probability:(MGMapProbability *)probability {
++ (instancetype)createWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity {
+    
+    MGMapProbability *probability = [unity probabilityWithCoordinate:coordinate];
+    
+    // 根据坐标取四个方向的元素模型做平均值计算，求海拔、温度、湿度等数据
+    // 如果四个方向均没有数据记录，即所有数据初始化时，设置默认参数
+    CGFloat altitude = [unity averageAltitudeWithCoordinate:coordinate];     // 海拔
+    CGFloat temperature = [unity averageTemperatureWithCoordinate:coordinate];   // 温度
+    CGFloat humidity = [unity averageHumidityWithCoordinate:coordinate];      // 湿度
+    
+    ElementType curType = [self typeWithProbability:probability];
+    
+    MGBasicElement *element;
+    
+    switch (curType) {
+        case ElementTypeGrass:
+            //
+            element = [MGMapGrassElement elementWithProbability:probability];
+            break;
+        case ElementTypeDirt:
+            //
+            element = [MGMapDirtElement elementWithProbability:probability];
+            break;
+        case ElementTypeSand:
+            //
+            element = [MGMapSandElement elementWithProbability:probability];
+            break;
+        case ElementTypeWater:
+            //
+            element = [MGMapWaterElement elementWithProbability:probability];
+            break;
+        case ElementTypeSnow:
+            //
+            element = [MGMapSnowElement elementWithProbability:probability];
+            break;
+        default:
+            break;
+    }
+    
+    element.latitude = coordinate.x;
+    element.longitude = coordinate.y;
+    
+    // 海拔上升下降趋势
+    ElementAltitudeTendency altitudeTendency = [self altitudeTendencyRise:probability.averageProbability.altitudeRise decline:probability.averageProbability.altitudeDecline];
+    // 温度上升下降趋势
+    ElementTemperatureTendency temperatureTendency;
+    // 湿度上升下降趋势
+    ElementHumidityTendency humidityTendency = [self humidityTendencyRise:probability.averageProbability.humidityRise decline:probability.averageProbability.humidityDecline];
+    
+    switch (altitudeTendency) {
+        case ElementAltitudeRise:
+            // 海拔升高，影响温度升高概率-1，温度降低概率+1
+            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise-1 decline:probability.averageProbability.temperatureDecline+1];
+            break;
+        case ElementAltitudeDecline:
+            // 海拔降低，影响温度升高概率+1，温度降低概率-1
+            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise+1 decline:probability.averageProbability.temperatureDecline-1];
+            break;
+        default:
+            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise decline:probability.averageProbability.temperatureDecline];
+            break;
+    }
+    
+    element.altitude = [self altitudeWithTendency:altitudeTendency average:altitude];
+    element.temperature = [self temperatureWithTendency:temperatureTendency average:temperature];
+    element.humidity = [self humidityWithTendency:humidityTendency average:humidity];
+    
+    // 存储本地
+    
+    return element;
+}
+
++ (instancetype)elementWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity probability:(MGMapProbability *)probability {
     
     // 根据坐标取四个方向的元素模型做平均值计算，求海拔、温度、湿度等数据
     // 如果四个方向均没有数据记录，即所有数据初始化时，设置默认参数
@@ -277,6 +346,33 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
             return average;
             break;
     }
+}
+
+#pragma mark - NSCoding
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    
+    [aCoder encodeFloat:self.altitude forKey:@"altitude"];
+    [aCoder encodeFloat:self.temperature forKey:@"temperature"];
+    [aCoder encodeFloat:self.humidity forKey:@"humidity"];
+    [aCoder encodeObject:self.northProbability forKey:@"northProbability"];
+    [aCoder encodeObject:self.southProbability forKey:@"southProbability"];
+    [aCoder encodeObject:self.westProbability forKey:@"westProbability"];
+    [aCoder encodeObject:self.eastProbability forKey:@"eastProbability"];
+    
+}
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super init]) {
+        //
+        _altitude = [aDecoder decodeFloatForKey:@"altitude"];
+        _temperature = [aDecoder decodeFloatForKey:@"temperature"];
+        _humidity = [aDecoder decodeFloatForKey:@"humidity"];
+        _northProbability = [aDecoder decodeObjectOfClass:[MGElementProbability class] forKey:@"northProbability"];
+        _southProbability = [aDecoder decodeObjectOfClass:[MGElementProbability class] forKey:@"southProbability"];
+        _westProbability = [aDecoder decodeObjectOfClass:[MGElementProbability class] forKey:@"westProbability"];
+        _eastProbability = [aDecoder decodeObjectOfClass:[MGElementProbability class] forKey:@"eastProbability"];
+        
+    }
+    return self;
 }
 
 @end

@@ -125,6 +125,8 @@
 
 @end
 
+@interface MGElementProbability () <NSCoding>
+@end
 
 @implementation MGElementProbability
 
@@ -132,6 +134,39 @@
     MGElementProbability *elementProbability = [[MGElementProbability alloc] init];
     
     return elementProbability;
+}
+
+#pragma mark - NSCoding
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    
+    [aCoder encodeInt:self.altitudeRise forKey:@"altitudeRise"];
+    [aCoder encodeInt:self.altitudeDecline forKey:@"altitudeDecline"];
+    [aCoder encodeInt:self.temperatureRise forKey:@"temperatureRise"];
+    [aCoder encodeInt:self.temperatureDecline forKey:@"temperatureDecline"];
+    [aCoder encodeInt:self.humidityRise forKey:@"humidityRise"];
+    [aCoder encodeInt:self.humidityDecline forKey:@"humidityDecline"];
+    [aCoder encodeInt:self.grassProbability forKey:@"grassProbability"];
+    [aCoder encodeInt:self.dirtProbability forKey:@"dirtProbability"];
+    [aCoder encodeInt:self.sandProbability forKey:@"sandProbability"];
+    [aCoder encodeInt:self.waterProbability forKey:@"waterProbability"];
+    [aCoder encodeInt:self.snowProbability forKey:@"snowProbability"];
+}
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super init]) {
+        //
+        self.altitudeRise = [aDecoder decodeIntForKey:@"altitudeRise"];
+        self.altitudeDecline = [aDecoder decodeIntForKey:@"altitudeDecline"];
+        self.temperatureRise = [aDecoder decodeIntForKey:@"temperatureRise"];
+        self.temperatureDecline = [aDecoder decodeIntForKey:@"temperatureDecline"];
+        self.humidityRise = [aDecoder decodeIntForKey:@"humidityRise"];
+        self.humidityDecline = [aDecoder decodeIntForKey:@"humidityDecline"];
+        self.grassProbability = [aDecoder decodeIntForKey:@"grassProbability"];
+        self.dirtProbability = [aDecoder decodeIntForKey:@"dirtProbability"];
+        self.sandProbability = [aDecoder decodeIntForKey:@"sandProbability"];
+        self.waterProbability = [aDecoder decodeIntForKey:@"waterProbability"];
+        self.snowProbability = [aDecoder decodeIntForKey:@"snowProbability"];
+    }
+    return self;
 }
 
 @end
