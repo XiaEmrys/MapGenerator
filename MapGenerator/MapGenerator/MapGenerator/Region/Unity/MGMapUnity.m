@@ -7,13 +7,20 @@
 //
 
 #import "MGMapUnity.h"
+#import "MGMapProbability.h"
 
-static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas";
+#import "MGBasicElement.h"
+
+//static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas/__datas_0_0.element";
+
+//static NSString *datasFilePath = @"/Users/emrys/Library/Containers/com.Emrys.MapGenerator/Data/Documents/__datas_0_0.element";
+//static NSString *datasFilePath = [[NSString stringWithFormat:@"%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject]] stringByAppendingPathComponent:@"TestDatas/__datas_0_0.element"];
 
 @implementation MGMapUnity
 
-+ (instancetype)unityWithCoordinate:(CGPoint)coordinate {
-    
++ (instancetype)mapWithCoordinate:(CGPoint)coordinate {
+//+ (instancetype)unityWithCoordinate:(CGPoint)coordinate {
+
     MGMapUnity *unity = [[MGMapUnity alloc] init];
     
     
@@ -22,30 +29,146 @@ static NSString *datasFilePath = @"/Users/emrys/Documents/MapGenerator/TestDatas
     // 初始化时均无值的情况下，草地50，其他值根据情况判定
     
     for (int i = 0; i < 100*100; ++i) {
-        // 先在本地存储取数据，没有的时候创建
-        // 创建时先判断周围四个方向的元素各属性概率值，根据概率值生成当前元素概率
-        // 根据概率创建元素对象
+        int latitude = i%100;
+        int longitude = i/100;
+        
+        MGBasicElement *ele = [MGBasicElement createWithCoordinate:CGPointMake(latitude, longitude) inUnity:unity];
     }
-    
+
     return unity;
 }
 
+// 元素数据文件存储地址
+- (NSString *)elementDatasPath {
+    
+//    NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSSystemDomainMask, YES);
+//    NSLog(@"%@", NSSearchPathForDirectoriesInDomains(NSAllLibrariesDirectory, NSAllDomainsMask, YES));
+//    NSLog(@"%@", NSHomeDirectory());
+//    NSLog(@"%@", NSHomeDirectoryForUser(@"emrys"));
+//    NSLog(@"%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject]);
+//    return datasFilePath;
+    return [[NSString stringWithFormat:@"%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject]] stringByAppendingPathComponent:@"TestDatas"];
+}
 
 // 根据坐标点取概率模型
-- (MGMapProbability *)probabilityWithCoordinate:(CGPoint)coordinate {
-    return nil;
+- (MGMapProbability *)probabilityWithElementCoordinate:(CGPoint)coordinate {
+    
+    MGMapProbability *probability = [MGMapProbability mapProbability];
+    
+    probability.northProbability = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x, coordinate.y-1) inUnity:self].mapProbability.southProbability;
+    probability.southProbability = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x, coordinate.y+1) inUnity:self].mapProbability.northProbability;
+    probability.westProbability = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x-1, coordinate.y) inUnity:self].mapProbability.eastProbability;
+    probability.eastProbability = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x+1, coordinate.y) inUnity:self].mapProbability.westProbability;
+        
+    return probability;
 }
 // 根据坐标点取海拔
-- (CGFloat)averageAltitudeWithCoordinate:(CGPoint)coordinate {
-    return 0;
+- (CGFloat)averageAltitudeWithElementCoordinate:(CGPoint)coordinate {
+    
+    MGBasicElement *northElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x, coordinate.y-1) inUnity:self];
+    MGBasicElement *southElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x, coordinate.y+1) inUnity:self];
+    MGBasicElement *westElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x-1, coordinate.y) inUnity:self];
+    MGBasicElement *eastElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x+1, coordinate.y) inUnity:self];
+
+    // 记录共有几个方向的元素概率对象
+    NSUInteger elementCount = 0;
+    
+    CGFloat altitudeBase = 0;
+    
+    if (nil != northElement) {
+        elementCount++;
+        altitudeBase += northElement.altitude;
+    }
+    if (nil != southElement) {
+        elementCount++;
+        altitudeBase += southElement.altitude;
+    }
+    if (nil != westElement) {
+        elementCount++;
+        altitudeBase += westElement.altitude;
+    }
+    if (nil != eastElement) {
+        elementCount++;
+        altitudeBase += eastElement.altitude;
+    }
+    
+    if (0 == elementCount) {
+        return 200;
+    } else {
+        return altitudeBase/elementCount;
+    }
 }
 // 根据坐标点取温度
-- (CGFloat)averageTemperatureWithCoordinate:(CGPoint)coordinate {
-    return 0;
+- (CGFloat)averageTemperatureWithElementCoordinate:(CGPoint)coordinate {
+    
+    MGBasicElement *northElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x, coordinate.y-1) inUnity:self];
+    MGBasicElement *southElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x, coordinate.y+1) inUnity:self];
+    MGBasicElement *westElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x-1, coordinate.y) inUnity:self];
+    MGBasicElement *eastElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x+1, coordinate.y) inUnity:self];
+    
+    // 记录共有几个方向的元素概率对象
+    NSUInteger elementCount = 0;
+    
+    CGFloat temperatureBase = 0;
+    
+    if (nil != northElement) {
+        elementCount++;
+        temperatureBase += northElement.temperature;
+    }
+    if (nil != southElement) {
+        elementCount++;
+        temperatureBase += southElement.temperature;
+    }
+    if (nil != westElement) {
+        elementCount++;
+        temperatureBase += westElement.temperature;
+    }
+    if (nil != eastElement) {
+        elementCount++;
+        temperatureBase += eastElement.temperature;
+    }
+    
+    if (0 == elementCount) {
+        return 25;
+    } else {
+        return temperatureBase/elementCount;
+    }
 }
 // 根据坐标点取湿度
-- (CGFloat)averageHumidityWithCoordinate:(CGPoint)coordinate {
-    return 0;
+- (CGFloat)averageHumidityWithElementCoordinate:(CGPoint)coordinate {
+    
+    MGBasicElement *northElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x, coordinate.y-1) inUnity:self];
+    MGBasicElement *southElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x, coordinate.y+1) inUnity:self];
+    MGBasicElement *westElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x-1, coordinate.y) inUnity:self];
+    MGBasicElement *eastElement = [MGBasicElement elementWithCoordinate:CGPointMake(coordinate.x+1, coordinate.y) inUnity:self];
+    
+    // 记录共有几个方向的元素概率对象
+    NSUInteger elementCount = 0;
+    
+    CGFloat humidityBase = 0;
+    
+    if (nil != northElement) {
+        elementCount++;
+        humidityBase += northElement.humidity;
+    }
+    if (nil != southElement) {
+        elementCount++;
+        humidityBase += southElement.humidity;
+    }
+    if (nil != westElement) {
+        elementCount++;
+        humidityBase += westElement.humidity;
+    }
+    if (nil != eastElement) {
+        elementCount++;
+        humidityBase += eastElement.humidity;
+    }
+    
+    if (0 == elementCount) {
+        return 40;
+    } else {
+        return humidityBase/elementCount;
+    }
 }
 
 

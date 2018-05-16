@@ -107,18 +107,37 @@
         humidityDeclineBase *= self.eastProbability.humidityDecline;
     }
     
-    averageProbability.grassProbability = pow(grassProbabilityBase, elementProbabilityCount);
-    averageProbability.dirtProbability = pow(dirtProbabilityBase, elementProbabilityCount);
-    averageProbability.sandProbability = pow(sandProbabilityBase, elementProbabilityCount);
-    averageProbability.waterProbability = pow(waterProbabilityBase, elementProbabilityCount);
-    averageProbability.snowProbability = pow(snowProbabilityBase, elementProbabilityCount);
+    if (0 == elementProbabilityCount) {
+        averageProbability.grassProbability = 100;
+        averageProbability.dirtProbability = 0;
+        averageProbability.sandProbability = 0;
+        averageProbability.waterProbability = 0;
+        averageProbability.snowProbability = 0;
+        
+        averageProbability.altitudeRise = 50;
+        averageProbability.altitudeDecline = 50;
+        averageProbability.temperatureRise = 50;
+        averageProbability.temperatureDecline = 50;
+        averageProbability.humidityRise = 50;
+        averageProbability.humidityDecline = 50;
+    } else {
+        averageProbability.grassProbability = pow(grassProbabilityBase, 1.0/elementProbabilityCount);
+        averageProbability.dirtProbability = pow(dirtProbabilityBase, 1.0/elementProbabilityCount);
+        averageProbability.sandProbability = pow(sandProbabilityBase, 1.0/elementProbabilityCount);
+        averageProbability.waterProbability = pow(waterProbabilityBase, 1.0/elementProbabilityCount);
+        averageProbability.snowProbability = pow(snowProbabilityBase, 1.0/elementProbabilityCount);
+        
+        averageProbability.altitudeRise = pow(altitudeRiseBase, 1.0/elementProbabilityCount);
+        averageProbability.altitudeDecline = pow(altitudeDeclineBase, 1.0/elementProbabilityCount);
+        averageProbability.temperatureRise = pow(temperatureRiseBase, 1.0/elementProbabilityCount);
+        averageProbability.temperatureDecline = pow(temperatureDeclineBase, 1.0/elementProbabilityCount);
+        averageProbability.humidityRise = pow(humidityRiseBase, 1.0/elementProbabilityCount);
+        averageProbability.humidityDecline = pow(humidityDeclineBase, 1.0/elementProbabilityCount);
+    }
     
-    averageProbability.altitudeRise = pow(altitudeRiseBase, elementProbabilityCount);
-    averageProbability.altitudeDecline = pow(altitudeDeclineBase, elementProbabilityCount);
-    averageProbability.temperatureRise = pow(temperatureRiseBase, elementProbabilityCount);
-    averageProbability.temperatureDecline = pow(temperatureDeclineBase, elementProbabilityCount);
-    averageProbability.humidityRise = pow(humidityRiseBase, elementProbabilityCount);
-    averageProbability.humidityDecline = pow(humidityDeclineBase, elementProbabilityCount);
+    if (averageProbability.altitudeRise > 100) {
+        NSLog(@"error");
+    }
     
     return averageProbability;
 }

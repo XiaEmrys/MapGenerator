@@ -67,20 +67,25 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
 + (instancetype)elementWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity {
     
     // 取数据，有则直接返回，没有则返回nil
+    NSData *data = [[NSMutableData alloc] initWithContentsOfFile:[unity.elementDatasPath stringByAppendingPathComponent:[NSString stringWithFormat:@"__element_%02zd_%02zd", (NSInteger)coordinate.x, (NSInteger)coordinate.y]]];
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
     
-    return [self mapWithCoordinate:coordinate probability:nil];
-    
-    return nil;
+    MGBasicElement *element = [unarchiver decodeObjectForKey:[NSString stringWithFormat:@"__element_%02zd_%02zd", (NSInteger)coordinate.x, (NSInteger)coordinate.y]];
+    if (nil != element) {
+        return element;
+    } else {
+        return nil;
+    }
 }
 + (instancetype)createWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity {
     
-    MGMapProbability *probability = [unity probabilityWithCoordinate:coordinate];
+    MGMapProbability *probability = [unity probabilityWithElementCoordinate:coordinate];
     
     // 根据坐标取四个方向的元素模型做平均值计算，求海拔、温度、湿度等数据
     // 如果四个方向均没有数据记录，即所有数据初始化时，设置默认参数
-    CGFloat altitude = [unity averageAltitudeWithCoordinate:coordinate];     // 海拔
-    CGFloat temperature = [unity averageTemperatureWithCoordinate:coordinate];   // 温度
-    CGFloat humidity = [unity averageHumidityWithCoordinate:coordinate];      // 湿度
+    CGFloat altitude = [unity averageAltitudeWithElementCoordinate:coordinate];     // 海拔
+    CGFloat temperature = [unity averageTemperatureWithElementCoordinate:coordinate];   // 温度
+    CGFloat humidity = [unity averageHumidityWithElementCoordinate:coordinate];      // 湿度
     
     ElementType curType = [self typeWithProbability:probability];
     
@@ -140,79 +145,86 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
     element.humidity = [self humidityWithTendency:humidityTendency average:humidity];
     
     // 存储本地
+    NSMutableData *elementInfoData = [[NSMutableData alloc] init];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:elementInfoData];
+
+    [archiver encodeObject:element forKey:[NSString stringWithFormat:@"__element_%02zd_%02zd", (NSInteger)coordinate.x, (NSInteger)coordinate.y]];
+    [archiver finishEncoding];
+    
+//    BOOL isSuccess = [NSKeyedArchiver archiveRootObject:element toFile:unity.elementDatasPath];
+    [elementInfoData writeToFile:[unity.elementDatasPath stringByAppendingPathComponent:[NSString stringWithFormat:@"__element_%02zd_%02zd", (NSInteger)coordinate.x, (NSInteger)coordinate.y]] atomically:YES];
     
     return element;
 }
 
-+ (instancetype)elementWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity probability:(MGMapProbability *)probability {
-    
-    // 根据坐标取四个方向的元素模型做平均值计算，求海拔、温度、湿度等数据
-    // 如果四个方向均没有数据记录，即所有数据初始化时，设置默认参数
-    CGFloat altitude = 200;     // 海拔
-    CGFloat temperature = 20;   // 温度
-    CGFloat humidity = 40;      // 湿度
-    
-    ElementType curType = [self typeWithProbability:probability];
-
-    MGBasicElement *element;
-    
-    switch (curType) {
-        case ElementTypeGrass:
-            //
-            element = [MGMapGrassElement elementWithProbability:probability];
-            break;
-        case ElementTypeDirt:
-            //
-            element = [MGMapDirtElement elementWithProbability:probability];
-            break;
-        case ElementTypeSand:
-            //
-            element = [MGMapSandElement elementWithProbability:probability];
-            break;
-        case ElementTypeWater:
-            //
-            element = [MGMapWaterElement elementWithProbability:probability];
-            break;
-        case ElementTypeSnow:
-            //
-            element = [MGMapSnowElement elementWithProbability:probability];
-            break;
-        default:
-            break;
-    }
-    
-    element.latitude = coordinate.x;
-    element.longitude = coordinate.y;
-    
-    // 海拔上升下降趋势
-    ElementAltitudeTendency altitudeTendency = [self altitudeTendencyRise:probability.averageProbability.altitudeRise decline:probability.averageProbability.altitudeDecline];
-    // 温度上升下降趋势
-    ElementTemperatureTendency temperatureTendency;
-    // 湿度上升下降趋势
-    ElementHumidityTendency humidityTendency = [self humidityTendencyRise:probability.averageProbability.humidityRise decline:probability.averageProbability.humidityDecline];
-    
-    switch (altitudeTendency) {
-        case ElementAltitudeRise:
-            // 海拔升高，影响温度升高概率-1，温度降低概率+1
-            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise-1 decline:probability.averageProbability.temperatureDecline+1];
-            break;
-        case ElementAltitudeDecline:
-            // 海拔降低，影响温度升高概率+1，温度降低概率-1
-            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise+1 decline:probability.averageProbability.temperatureDecline-1];
-            break;
-        default:
-            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise decline:probability.averageProbability.temperatureDecline];
-            break;
-    }
-    
-    element.altitude = [self altitudeWithTendency:altitudeTendency average:altitude];
-    element.temperature = [self temperatureWithTendency:temperatureTendency average:temperature];
-    element.humidity = [self humidityWithTendency:humidityTendency average:humidity];
-    
-    // 存储本地
-    
-    return element;
-}
+//+ (instancetype)elementWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity probability:(MGMapProbability *)probability {
+//
+//    // 根据坐标取四个方向的元素模型做平均值计算，求海拔、温度、湿度等数据
+//    // 如果四个方向均没有数据记录，即所有数据初始化时，设置默认参数
+//    CGFloat altitude = 200;     // 海拔
+//    CGFloat temperature = 20;   // 温度
+//    CGFloat humidity = 40;      // 湿度
+//
+//    ElementType curType = [self typeWithProbability:probability];
+//
+//    MGBasicElement *element;
+//
+//    switch (curType) {
+//        case ElementTypeGrass:
+//            //
+//            element = [MGMapGrassElement elementWithProbability:probability];
+//            break;
+//        case ElementTypeDirt:
+//            //
+//            element = [MGMapDirtElement elementWithProbability:probability];
+//            break;
+//        case ElementTypeSand:
+//            //
+//            element = [MGMapSandElement elementWithProbability:probability];
+//            break;
+//        case ElementTypeWater:
+//            //
+//            element = [MGMapWaterElement elementWithProbability:probability];
+//            break;
+//        case ElementTypeSnow:
+//            //
+//            element = [MGMapSnowElement elementWithProbability:probability];
+//            break;
+//        default:
+//            break;
+//    }
+//
+//    element.latitude = coordinate.x;
+//    element.longitude = coordinate.y;
+//
+//    // 海拔上升下降趋势
+//    ElementAltitudeTendency altitudeTendency = [self altitudeTendencyRise:probability.averageProbability.altitudeRise decline:probability.averageProbability.altitudeDecline];
+//    // 温度上升下降趋势
+//    ElementTemperatureTendency temperatureTendency;
+//    // 湿度上升下降趋势
+//    ElementHumidityTendency humidityTendency = [self humidityTendencyRise:probability.averageProbability.humidityRise decline:probability.averageProbability.humidityDecline];
+//
+//    switch (altitudeTendency) {
+//        case ElementAltitudeRise:
+//            // 海拔升高，影响温度升高概率-1，温度降低概率+1
+//            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise-1 decline:probability.averageProbability.temperatureDecline+1];
+//            break;
+//        case ElementAltitudeDecline:
+//            // 海拔降低，影响温度升高概率+1，温度降低概率-1
+//            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise+1 decline:probability.averageProbability.temperatureDecline-1];
+//            break;
+//        default:
+//            temperatureTendency = [self temperatureTendencyRise:probability.averageProbability.temperatureRise decline:probability.averageProbability.temperatureDecline];
+//            break;
+//    }
+//
+//    element.altitude = [self altitudeWithTendency:altitudeTendency average:altitude];
+//    element.temperature = [self temperatureWithTendency:temperatureTendency average:temperature];
+//    element.humidity = [self humidityWithTendency:humidityTendency average:humidity];
+//
+//
+//    return element;
+//}
 
 + (ElementType)typeWithProbability:(MGMapProbability *)probability {
     
@@ -373,6 +385,18 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
         
     }
     return self;
+}
+
+#pragma mark - get
+- (MGMapProbability *)mapProbability {
+    MGMapProbability *mapProbability = [MGMapProbability mapProbability];
+    
+    mapProbability.northProbability = self.northProbability;
+    mapProbability.southProbability = self.southProbability;
+    mapProbability.westProbability = self.westProbability;
+    mapProbability.eastProbability = self.eastProbability;
+    
+    return mapProbability;
 }
 
 @end

@@ -27,7 +27,7 @@ typedef NS_ENUM(NSUInteger, ElementType) {
 // 生成数据
 + (instancetype)createWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity;
 
-+ (instancetype)elementWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity probability:(MGMapProbability *)probability;
+//+ (instancetype)elementWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity probability:(MGMapProbability *)probability;
 
 + (instancetype)elementWithProbability:(MGMapProbability *)probability;
 
