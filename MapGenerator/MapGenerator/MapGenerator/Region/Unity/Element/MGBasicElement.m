@@ -67,10 +67,10 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
 + (instancetype)elementWithCoordinate:(CGPoint)coordinate inUnity:(MGMapUnity *)unity {
     
     // 取数据，有则直接返回，没有则返回nil
-    NSData *data = [[NSMutableData alloc] initWithContentsOfFile:[unity.elementDatasPath stringByAppendingPathComponent:[NSString stringWithFormat:@"__element_%02zd_%02zd", (NSInteger)coordinate.x, (NSInteger)coordinate.y]]];
+    NSData *data = [[NSMutableData alloc] initWithContentsOfFile:unity.elementDatasPath];
     NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
     
-    MGBasicElement *element = [unarchiver decodeObjectForKey:[NSString stringWithFormat:@"__element_%02zd_%02zd", (NSInteger)coordinate.x, (NSInteger)coordinate.y]];
+    MGBasicElement *element = [unarchiver decodeObjectForKey:[self elementKeyWithCoordinate:coordinate]];
     if (nil != element) {
         return element;
     } else {
@@ -143,16 +143,6 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
     element.altitude = [self altitudeWithTendency:altitudeTendency average:altitude];
     element.temperature = [self temperatureWithTendency:temperatureTendency average:temperature];
     element.humidity = [self humidityWithTendency:humidityTendency average:humidity];
-    
-    // 存储本地
-    NSMutableData *elementInfoData = [[NSMutableData alloc] init];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:elementInfoData];
-
-    [archiver encodeObject:element forKey:[NSString stringWithFormat:@"__element_%02zd_%02zd", (NSInteger)coordinate.x, (NSInteger)coordinate.y]];
-    [archiver finishEncoding];
-    
-//    BOOL isSuccess = [NSKeyedArchiver archiveRootObject:element toFile:unity.elementDatasPath];
-    [elementInfoData writeToFile:[unity.elementDatasPath stringByAppendingPathComponent:[NSString stringWithFormat:@"__element_%02zd_%02zd", (NSInteger)coordinate.x, (NSInteger)coordinate.y]] atomically:YES];
     
     return element;
 }
@@ -360,6 +350,11 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
     }
 }
 
+// 取key值
++ (NSString *)elementKeyWithCoordinate:(CGPoint)coordinate {
+    return [NSString stringWithFormat:@"__element_%02zd_%02zd", (NSInteger)coordinate.x, (NSInteger)coordinate.y];
+}
+
 #pragma mark - NSCoding
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     
@@ -397,6 +392,9 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
     mapProbability.eastProbability = self.eastProbability;
     
     return mapProbability;
+}
+- (NSString *)elementKey {
+    return [[self class] elementKeyWithCoordinate:CGPointMake(self.latitude, self.longitude)];
 }
 
 @end

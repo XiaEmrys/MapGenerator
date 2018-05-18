@@ -135,10 +135,6 @@
         averageProbability.humidityDecline = pow(humidityDeclineBase, 1.0/elementProbabilityCount);
     }
     
-    if (averageProbability.altitudeRise > 100) {
-        NSLog(@"error");
-    }
-    
     return averageProbability;
 }
 

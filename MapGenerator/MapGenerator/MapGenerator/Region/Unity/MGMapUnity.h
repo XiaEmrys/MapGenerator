@@ -11,9 +11,13 @@
 
 #import "MGMapObject.h"
 
+@class MGMapRegion;
 @interface MGMapUnity : MGMapObject
 
 @property (readonly) NSString *elementDatasPath;
+@property (readonly) NSData *elementDatas;
+
++ (instancetype)createWithCoordinate:(CGPoint)coordinate inRegion:(MGMapRegion *)region;
 
 // 根据坐标点取概率模型
 - (MGMapProbability *)probabilityWithElementCoordinate:(CGPoint)coordinate;

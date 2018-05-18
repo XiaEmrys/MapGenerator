@@ -36,6 +36,8 @@ typedef NS_ENUM(NSUInteger, ElementType) {
 
 @property (readonly) ElementType elementType;
 
+@property (readonly) NSString *elementKey;
+
 // 海拔
 @property (readonly) CGFloat altitude;
 // 温度
