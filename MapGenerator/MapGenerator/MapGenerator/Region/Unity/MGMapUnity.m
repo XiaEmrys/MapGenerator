@@ -56,7 +56,11 @@
         
         [unity.elementArrM addObject:element];
         
-        NSLog(@"element:%.2f, index:%d", element.altitude, i);
+//        NSLog(@"element:%.2f, index:%d", element.altitude, i);
+//        NSLog(@"element:%zd, index:%d", element.elementType, i);
+//        if (ElementTypeGrass != element.elementType) {
+//            NSLog(@"element:%zd, index:%d", element.elementType, i);
+//        }
     }
     [archiver finishEncoding];
     
@@ -71,10 +75,25 @@
     if (SQLITE_OK == openResult) {
         
         // 创建表
-        int creatResult = sqlite3_exec(_db, @"CREATE TABLE IF NOT EXISTS t_testTable(id INTEGER PRIMARY KEY NOT NULL, coordinate TEXT NOT NULL UNIQUE)".UTF8String, NULL, NULL, NULL);
+        int creatResult = sqlite3_exec(_db, @"CREATE TABLE IF NOT EXISTS t_testTable(id INTEGER PRIMARY KEY AUTOINCREMENT, coordinate TEXT NOT NULL UNIQUE)".UTF8String, NULL, NULL, NULL);
         
         if (SQLITE_OK == creatResult) {
             NSLog(@"创建表成功");
+            
+            int insertResult = sqlite3_exec(_db, [NSString stringWithFormat:@"INSERT INTO t_testTable (coordinate) VALUES ('__unity_latitude_%zd_longitude_%zd');", (NSInteger)coordinate.x, (NSInteger)coordinate.y].UTF8String, NULL, NULL, NULL);
+            
+            if (SQLITE_OK == insertResult) {
+                // 保存数据成功
+                NSLog(@"地点坐标保存成功");
+            } else {
+                // 保存数据失败
+                NSLog(@"地点坐标保存失败");
+//                if (SQLITE_CONSTRAINT == insertResult) {
+//                    int updateResult = sqlite3_exec(_db, [NSString stringWithFormat:@"UPDATE t_testTable SET *** = *** WHERE coordinate = '__unity_latitude_%zd_longitude_%zd';", (NSInteger)coordinate.x, (NSInteger)coordinate.y].UTF8String, NULL, NULL, NULL);
+//                    NSLog(@"%d", updateResult);
+//                }
+            }
+            
         } else {
             NSLog(@"创建表失败，%d", creatResult);
         }

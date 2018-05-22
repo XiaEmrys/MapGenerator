@@ -10,6 +10,8 @@
 
 typedef u_short MGProbability;
 
+static const MGProbability ProbabilityMax = 100;
+
 @interface MGElementProbability : NSObject
 
 + (instancetype)elementProbability;

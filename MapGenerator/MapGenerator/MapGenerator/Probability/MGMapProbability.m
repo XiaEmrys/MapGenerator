@@ -79,10 +79,10 @@
     if (nil != self.westProbability) {
         elementProbabilityCount++;
         grassProbabilityBase *= self.westProbability.grassProbability;
-        dirtProbabilityBase *= self.westProbability.grassProbability;
-        sandProbabilityBase *= self.westProbability.grassProbability;
-        waterProbabilityBase *= self.westProbability.grassProbability;
-        snowProbabilityBase *= self.westProbability.grassProbability;
+        dirtProbabilityBase *= self.westProbability.dirtProbability;
+        sandProbabilityBase *= self.westProbability.sandProbability;
+        waterProbabilityBase *= self.westProbability.waterProbability;
+        snowProbabilityBase *= self.westProbability.snowProbability;
         
         altitudeRiseBase *= self.westProbability.altitudeRise;
         altitudeDeclineBase *= self.westProbability.altitudeDecline;
@@ -108,10 +108,10 @@
     }
     
     if (0 == elementProbabilityCount) {
-        averageProbability.grassProbability = 100;
-        averageProbability.dirtProbability = 0;
-        averageProbability.sandProbability = 0;
-        averageProbability.waterProbability = 0;
+        averageProbability.grassProbability = 90;
+        averageProbability.dirtProbability = 10;
+        averageProbability.sandProbability = 10;
+        averageProbability.waterProbability = 10;
         averageProbability.snowProbability = 0;
         
         averageProbability.altitudeRise = 50;
