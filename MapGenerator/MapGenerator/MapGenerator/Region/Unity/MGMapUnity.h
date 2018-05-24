@@ -28,4 +28,9 @@
 // 根据坐标点取湿度
 - (CGFloat)averageHumidityWithElementCoordinate:(CGPoint)coordinate;
 
+// 河流上游方向
+- (MapDirection)upstreamDirectionOfRiverWithElementCoordinate:(CGPoint)coordinate;
+// 河流下游方向
+- (MapDirection)downstreamDirectionOfRiverWithElementCoordinate:(CGPoint)coordinate;
+
 @end

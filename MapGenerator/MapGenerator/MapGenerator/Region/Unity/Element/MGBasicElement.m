@@ -104,9 +104,13 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
             //
             element = [MGMapSandElement elementWithProbability:probability];
             break;
-        case ElementTypeWater:
+        case ElementTypeWater: {
             //
-            element = [MGMapWaterElement elementWithProbability:probability];
+            MapDirection upstreamDirection = [unity upstreamDirectionOfRiverWithElementCoordinate:coordinate];
+            MapDirection downstreamDirection = [unity downstreamDirectionOfRiverWithElementCoordinate:coordinate];
+//            element = [MGMapWaterElement elementWithProbability:probability];
+            element = [MGMapWaterElement waterWithProbability:probability upstreamDirection:upstreamDirection downstreamDirection:downstreamDirection];
+        }
             break;
         case ElementTypeSnow:
             //

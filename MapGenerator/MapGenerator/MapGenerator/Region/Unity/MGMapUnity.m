@@ -10,6 +10,7 @@
 #import "MGMapProbability.h"
 
 #import "MGBasicElement.h"
+#import "MGMapWaterElement.h"
 
 #import <sqlite3.h>
 
@@ -307,6 +308,86 @@
     } else {
         return humidityBase/elementCount;
     }
+}
+// 河流上游方向
+- (MapDirection)upstreamDirectionOfRiverWithElementCoordinate:(CGPoint)coordinate {
+    MGBasicElement *northElement = [self northElementWithElementCoordinate:coordinate];
+    if (nil != northElement) {
+        if (ElementTypeWater == northElement.elementType) {
+            if (MapDirectionSouth == ((MGMapWaterElement *)northElement).downstreamDirection) {
+                // 下游方向是south
+                return MapDirectionNorth;
+            }
+        }
+    }
+    MGBasicElement *southElement = [self southElementWithElementCoordinate:coordinate];
+    if (nil != southElement) {
+        if (ElementTypeWater == southElement.elementType) {
+            if (MapDirectionNorth == ((MGMapWaterElement *)southElement).downstreamDirection) {
+                // 下游方向是north
+                return MapDirectionSouth;
+            }
+        }
+    }
+    MGBasicElement *westElement = [self westElementWithElementCoordinate:coordinate];
+    if (nil != westElement) {
+        if (ElementTypeWater == westElement.elementType) {
+            if (MapDirectionEast == ((MGMapWaterElement *)westElement).downstreamDirection) {
+                // 下游方向是east
+                return MapDirectionWest;
+            }
+        }
+    }
+    MGBasicElement *eastElement = [self eastElementWithElementCoordinate:coordinate];
+    if (nil != eastElement) {
+        if (ElementTypeWater == eastElement.elementType) {
+            if (MapDirectionWest == ((MGMapWaterElement *)eastElement).downstreamDirection) {
+                // 下游方向是west
+                return MapDirectionEast;
+            }
+        }
+    }
+    return MapDirectionUnknown;
+}
+// 河流下游方向
+- (MapDirection)downstreamDirectionOfRiverWithElementCoordinate:(CGPoint)coordinate {
+    MGBasicElement *northElement = [self northElementWithElementCoordinate:coordinate];
+    if (nil != northElement) {
+        if (ElementTypeWater == northElement.elementType) {
+            if (MapDirectionSouth == ((MGMapWaterElement *)northElement).upstreamDirection) {
+                // 上游方向是south
+                return MapDirectionNorth;
+            }
+        }
+    }
+    MGBasicElement *southElement = [self southElementWithElementCoordinate:coordinate];
+    if (nil != southElement) {
+        if (ElementTypeWater == southElement.elementType) {
+            if (MapDirectionNorth == ((MGMapWaterElement *)southElement).upstreamDirection) {
+                // 上游方向是north
+                return MapDirectionSouth;
+            }
+        }
+    }
+    MGBasicElement *westElement = [self westElementWithElementCoordinate:coordinate];
+    if (nil != westElement) {
+        if (ElementTypeWater == westElement.elementType) {
+            if (MapDirectionEast == ((MGMapWaterElement *)westElement).upstreamDirection) {
+                // 上游方向是east
+                return MapDirectionWest;
+            }
+        }
+    }
+    MGBasicElement *eastElement = [self eastElementWithElementCoordinate:coordinate];
+    if (nil != eastElement) {
+        if (ElementTypeWater == eastElement.elementType) {
+            if (MapDirectionWest == ((MGMapWaterElement *)eastElement).upstreamDirection) {
+                // 上游方向是west
+                return MapDirectionEast;
+            }
+        }
+    }
+    return MapDirectionUnknown;
 }
 
 - (MGBasicElement *)northElementWithElementCoordinate:(CGPoint)coordinate {

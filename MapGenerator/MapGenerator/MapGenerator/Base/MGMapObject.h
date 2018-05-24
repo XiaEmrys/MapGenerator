@@ -8,6 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSUInteger, MapDirection) {
+    
+    MapDirectionUnknown
+    
+    ,MapDirectionNorth      // 北
+    ,MapDirectionSouth      // 南
+    ,MapDirectionWest       // 西
+    ,MapDirectionEast       // 东
+};
+
 @class MGMapProbability;
 @interface MGMapObject : NSObject
 

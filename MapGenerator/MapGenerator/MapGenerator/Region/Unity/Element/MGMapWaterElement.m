@@ -20,6 +20,11 @@
 // 东部概率模型
 @property (nonatomic, strong) MGElementProbability *eastProbability;
 
+// 上游方向
+@property (nonatomic, assign) MapDirection upstreamDirection;
+// 下游方向
+@property (nonatomic, assign) MapDirection downstreamDirection;
+
 @end
 
 @implementation MGMapWaterElement
@@ -67,6 +72,13 @@
     if (nil == probability.eastProbability) {
         waterElement.westProbability = averageProbability;
     }
+    
+    return waterElement;
+}
+
++ (instancetype)waterWithProbability:(MGMapProbability *)probability upstreamDirection:(MapDirection)upstreamDirection downstreamDirection:(MapDirection)downstreamDirection {
+    
+    MGMapWaterElement *waterElement = [super elementWithProbability:probability];
     
     return waterElement;
 }
