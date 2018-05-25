@@ -49,10 +49,10 @@
     if (nil != self.northProbability) {
         elementProbabilityCount++;
         grassProbabilityBase *= self.northProbability.grassProbability;
-        dirtProbabilityBase *= self.northProbability.grassProbability;
-        sandProbabilityBase *= self.northProbability.grassProbability;
-        waterProbabilityBase *= self.northProbability.grassProbability;
-        snowProbabilityBase *= self.northProbability.grassProbability;
+        dirtProbabilityBase *= self.northProbability.dirtProbability;
+        sandProbabilityBase *= self.northProbability.sandProbability;
+        waterProbabilityBase *= self.northProbability.waterProbability;
+        snowProbabilityBase *= self.northProbability.snowProbability;
         
         altitudeRiseBase *= self.northProbability.altitudeRise;
         altitudeDeclineBase *= self.northProbability.altitudeDecline;
@@ -64,10 +64,10 @@
     if (nil != self.southProbability) {
         elementProbabilityCount++;
         grassProbabilityBase *= self.southProbability.grassProbability;
-        dirtProbabilityBase *= self.southProbability.grassProbability;
-        sandProbabilityBase *= self.southProbability.grassProbability;
-        waterProbabilityBase *= self.southProbability.grassProbability;
-        snowProbabilityBase *= self.southProbability.grassProbability;
+        dirtProbabilityBase *= self.southProbability.dirtProbability;
+        sandProbabilityBase *= self.southProbability.sandProbability;
+        waterProbabilityBase *= self.southProbability.waterProbability;
+        snowProbabilityBase *= self.southProbability.snowProbability;
         
         altitudeRiseBase *= self.southProbability.altitudeRise;
         altitudeDeclineBase *= self.southProbability.altitudeDecline;
@@ -94,10 +94,10 @@
     if (nil != self.eastProbability) {
         elementProbabilityCount++;
         grassProbabilityBase *= self.eastProbability.grassProbability;
-        dirtProbabilityBase *= self.eastProbability.grassProbability;
-        sandProbabilityBase *= self.eastProbability.grassProbability;
-        waterProbabilityBase *= self.eastProbability.grassProbability;
-        snowProbabilityBase *= self.eastProbability.grassProbability;
+        dirtProbabilityBase *= self.eastProbability.dirtProbability;
+        sandProbabilityBase *= self.eastProbability.sandProbability;
+        waterProbabilityBase *= self.eastProbability.waterProbability;
+        snowProbabilityBase *= self.eastProbability.snowProbability;
         
         altitudeRiseBase *= self.eastProbability.altitudeRise;
         altitudeDeclineBase *= self.eastProbability.altitudeDecline;
@@ -133,6 +133,14 @@
         averageProbability.temperatureDecline = pow(temperatureDeclineBase, 1.0/elementProbabilityCount);
         averageProbability.humidityRise = pow(humidityRiseBase, 1.0/elementProbabilityCount);
         averageProbability.humidityDecline = pow(humidityDeclineBase, 1.0/elementProbabilityCount);
+    }
+    
+    if ((0 == averageProbability.grassProbability)
+        &&(0 == averageProbability.dirtProbability)
+        &&(0 == averageProbability.sandProbability)
+        &&(0 == averageProbability.waterProbability)
+        &&(0 == averageProbability.snowProbability)) {
+        NSLog(@"err");
     }
     
     return averageProbability;

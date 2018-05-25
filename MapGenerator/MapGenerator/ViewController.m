@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "MGMapUnity.h"
 
 @implementation ViewController
 
@@ -16,6 +17,8 @@
     // Do any additional setup after loading the view.
     
     [self viewToImage:self.view];
+    
+    [MGMapUnity createWithCoordinate:CGPointZero inRegion:nil];
 }
 
 -(NSImage *)viewToImage:(NSView *)m_view
@@ -39,7 +42,7 @@
     
     
     
-    NSLog(@"%hhd", res);
+//    NSLog(@"%hhd", res);
     
     return image;
     

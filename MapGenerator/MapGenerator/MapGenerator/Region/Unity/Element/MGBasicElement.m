@@ -170,6 +170,11 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
     } else if (arc4random_uniform(100) < averageProbability.snowProbability) {
         return ElementTypeSnow;
     } else {
+//        NSLog(@"%d", averageProbability.grassProbability);
+//        NSLog(@"%d", averageProbability.dirtProbability);
+//        NSLog(@"%d", averageProbability.sandProbability);
+//        NSLog(@"%d", averageProbability.waterProbability);
+//        NSLog(@"%d", averageProbability.snowProbability);
         return [self typeWithProbability:probability];
     }
 }

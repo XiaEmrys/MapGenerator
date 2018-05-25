@@ -45,6 +45,7 @@
     
     NSMutableData *elementInfoData = [[NSMutableData alloc] init];
     NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:elementInfoData];
+    NSMutableString *strM = [NSMutableString string];
     for (int i = 0; i < 100*100; ++i) {
         int latitude = i%100;
         int longitude = i/100;
@@ -62,7 +63,12 @@
 //        if (ElementTypeGrass != element.elementType) {
 //            NSLog(@"element:%zd, index:%d", element.elementType, i);
 //        }
+        if (0 == latitude) {
+            [strM appendString:@"\n"];
+        }
+        [strM appendFormat:@"%zd", element.elementType];
     }
+    NSLog(@"%@", strM);
     [archiver finishEncoding];
     
     [elementInfoData writeToFile:unity.elementDatasPath atomically:YES];
@@ -199,7 +205,7 @@
     MGBasicElement *westElement = [self westElementWithElementCoordinate:coordinate];
     MGBasicElement *eastElement = [self eastElementWithElementCoordinate:coordinate];
 
-    // 记录共有几个方向的元素概率对象
+    // 记录共有几个方向的元素对象
     NSUInteger elementCount = 0;
     
     CGFloat altitudeBase = 0;
@@ -311,6 +317,12 @@
 }
 // 河流上游方向
 - (MapDirection)upstreamDirectionOfRiverWithElementCoordinate:(CGPoint)coordinate {
+    
+    // 确定无元素的海拔上升概率最大的方向
+    MapDirection altitudeRiseMaximalDirection = MapDirectionUnknown;
+    MGProbability altitudeRiseMaximal = 0;
+    MGMapProbability *probability = [self probabilityWithElementCoordinate:coordinate];
+    
     MGBasicElement *northElement = [self northElementWithElementCoordinate:coordinate];
     if (nil != northElement) {
         if (ElementTypeWater == northElement.elementType) {
@@ -319,6 +331,10 @@
                 return MapDirectionNorth;
             }
         }
+    } else {
+//        return MapDirectionNorth;
+        altitudeRiseMaximal = probability.northProbability.altitudeRise;
+        altitudeRiseMaximalDirection = MapDirectionNorth;
     }
     MGBasicElement *southElement = [self southElementWithElementCoordinate:coordinate];
     if (nil != southElement) {
@@ -327,6 +343,12 @@
                 // 下游方向是north
                 return MapDirectionSouth;
             }
+        }
+    } else {
+//        return MapDirectionSouth;
+        if (probability.southProbability.altitudeRise > altitudeRiseMaximal) {
+            altitudeRiseMaximal = probability.southProbability.altitudeRise;
+            altitudeRiseMaximalDirection = MapDirectionSouth;
         }
     }
     MGBasicElement *westElement = [self westElementWithElementCoordinate:coordinate];
@@ -337,6 +359,12 @@
                 return MapDirectionWest;
             }
         }
+    } else {
+//        return MapDirectionWest;
+        if (probability.westProbability.altitudeRise > altitudeRiseMaximal) {
+            altitudeRiseMaximal = probability.westProbability.altitudeRise;
+            altitudeRiseMaximalDirection = MapDirectionWest;
+        }
     }
     MGBasicElement *eastElement = [self eastElementWithElementCoordinate:coordinate];
     if (nil != eastElement) {
@@ -346,18 +374,53 @@
                 return MapDirectionEast;
             }
         }
+    } else {
+//        return MapDirectionEast;
+        if (probability.eastProbability.altitudeRise > altitudeRiseMaximal) {
+            altitudeRiseMaximal = probability.eastProbability.altitudeRise;
+            altitudeRiseMaximalDirection = MapDirectionEast;
+        }
     }
-    return MapDirectionUnknown;
+    
+    return altitudeRiseMaximalDirection;
+    
+//    return MapDirectionUnknown;
 }
 // 河流下游方向
 - (MapDirection)downstreamDirectionOfRiverWithElementCoordinate:(CGPoint)coordinate {
-    MGBasicElement *northElement = [self northElementWithElementCoordinate:coordinate];
-    if (nil != northElement) {
-        if (ElementTypeWater == northElement.elementType) {
-            if (MapDirectionSouth == ((MGMapWaterElement *)northElement).upstreamDirection) {
-                // 上游方向是south
-                return MapDirectionNorth;
+
+    // 确定无元素的海拔下降概率最大的方向
+    MapDirection altitudeDeclineMaximalDirection = MapDirectionUnknown;
+    MGProbability altitudeDeclineMaximal = 0;
+    
+    MGMapProbability *probability = [self probabilityWithElementCoordinate:coordinate];
+    
+    MGBasicElement *eastElement = [self eastElementWithElementCoordinate:coordinate];
+    if (nil != eastElement) {
+        if (ElementTypeWater == eastElement.elementType) {
+            if (MapDirectionWest == ((MGMapWaterElement *)eastElement).upstreamDirection) {
+                // 上游方向是west
+                return MapDirectionEast;
             }
+        }
+    } else {
+//        return MapDirectionEast;
+        altitudeDeclineMaximal = probability.eastProbability.altitudeDecline;
+        altitudeDeclineMaximalDirection = MapDirectionEast;
+    }
+    MGBasicElement *westElement = [self westElementWithElementCoordinate:coordinate];
+    if (nil != westElement) {
+        if (ElementTypeWater == westElement.elementType) {
+            if (MapDirectionEast == ((MGMapWaterElement *)westElement).upstreamDirection) {
+                // 上游方向是east
+                return MapDirectionWest;
+            }
+        }
+    } else {
+//        return MapDirectionWest;
+        if (probability.westProbability.altitudeDecline > altitudeDeclineMaximal) {
+            altitudeDeclineMaximal = probability.westProbability.altitudeDecline;
+            altitudeDeclineMaximalDirection = MapDirectionWest;
         }
     }
     MGBasicElement *southElement = [self southElementWithElementCoordinate:coordinate];
@@ -368,26 +431,31 @@
                 return MapDirectionSouth;
             }
         }
-    }
-    MGBasicElement *westElement = [self westElementWithElementCoordinate:coordinate];
-    if (nil != westElement) {
-        if (ElementTypeWater == westElement.elementType) {
-            if (MapDirectionEast == ((MGMapWaterElement *)westElement).upstreamDirection) {
-                // 上游方向是east
-                return MapDirectionWest;
-            }
+    } else {
+//        return MapDirectionSouth;
+        if (probability.southProbability.altitudeDecline > altitudeDeclineMaximal) {
+            altitudeDeclineMaximal = probability.southProbability.altitudeDecline;
+            altitudeDeclineMaximalDirection = MapDirectionSouth;
         }
     }
-    MGBasicElement *eastElement = [self eastElementWithElementCoordinate:coordinate];
-    if (nil != eastElement) {
-        if (ElementTypeWater == eastElement.elementType) {
-            if (MapDirectionWest == ((MGMapWaterElement *)eastElement).upstreamDirection) {
-                // 上游方向是west
-                return MapDirectionEast;
+    MGBasicElement *northElement = [self northElementWithElementCoordinate:coordinate];
+    if (nil != northElement) {
+        if (ElementTypeWater == northElement.elementType) {
+            if (MapDirectionSouth == ((MGMapWaterElement *)northElement).upstreamDirection) {
+                // 上游方向是south
+                return MapDirectionNorth;
             }
         }
+    } else {
+//        return MapDirectionNorth;
+        if (probability.northProbability.altitudeDecline > altitudeDeclineMaximal) {
+            altitudeDeclineMaximal = probability.northProbability.altitudeDecline;
+            altitudeDeclineMaximalDirection = MapDirectionNorth;
+        }
     }
-    return MapDirectionUnknown;
+    
+    return altitudeDeclineMaximalDirection;
+//    return MapDirectionUnknown;
 }
 
 - (MGBasicElement *)northElementWithElementCoordinate:(CGPoint)coordinate {

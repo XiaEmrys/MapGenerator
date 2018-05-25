@@ -59,16 +59,16 @@
     
     
     if (nil == probability.northProbability) {
-        dirtElement.southProbability = averageProbability;
-    }
-    if (nil == probability.southProbability) {
         dirtElement.northProbability = averageProbability;
     }
+    if (nil == probability.southProbability) {
+        dirtElement.southProbability = averageProbability;
+    }
     if (nil == probability.westProbability) {
-        dirtElement.eastProbability = averageProbability;
+        dirtElement.westProbability = averageProbability;
     }
     if (nil == probability.eastProbability) {
-        dirtElement.westProbability = averageProbability;
+        dirtElement.eastProbability = averageProbability;
     }
     
     return dirtElement;
