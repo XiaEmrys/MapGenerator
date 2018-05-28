@@ -183,27 +183,48 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
     
     MGBasicElement *element = [[self alloc] init];
     
+//    if (nil != probability.northProbability) {
+//        element.southProbability = probability.northProbability;
+//    } else {
+//        element.southProbability = probability.averageProbability;
+//    }
+//    if (nil != probability.southProbability) {
+//        element.northProbability = probability.southProbability;
+//    } else {
+//        element.northProbability = probability.averageProbability;
+//    }
+//    if (nil != probability.westProbability) {
+//        element.eastProbability = probability.westProbability;
+//    } else {
+//        element.eastProbability = probability.averageProbability;
+//    }
+//    if (nil != probability.eastProbability) {
+//        element.westProbability = probability.eastProbability;
+//    } else {
+//        element.westProbability = probability.averageProbability;
+//    }
+    
     if (nil != probability.northProbability) {
-        element.southProbability = probability.northProbability;
-    } else {
-        element.southProbability = probability.averageProbability;
-    }
-    if (nil != probability.southProbability) {
-        element.northProbability = probability.southProbability;
+        element.northProbability = probability.northProbability;
     } else {
         element.northProbability = probability.averageProbability;
     }
-    if (nil != probability.westProbability) {
-        element.eastProbability = probability.westProbability;
+    if (nil != probability.southProbability) {
+        element.southProbability = probability.southProbability;
     } else {
-        element.eastProbability = probability.averageProbability;
+        element.southProbability = probability.averageProbability;
     }
-    if (nil != probability.eastProbability) {
-        element.westProbability = probability.eastProbability;
+    if (nil != probability.westProbability) {
+        element.westProbability = probability.westProbability;
     } else {
         element.westProbability = probability.averageProbability;
     }
-    
+    if (nil != probability.eastProbability) {
+        element.eastProbability = probability.eastProbability;
+    } else {
+        element.eastProbability = probability.averageProbability;
+    }
+
     return element;
 }
 

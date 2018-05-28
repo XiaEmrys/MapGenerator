@@ -16,9 +16,10 @@
 
     // Do any additional setup after loading the view.
     
-    [self viewToImage:self.view];
+//    [self viewToImage:self.view];
     
     [MGMapUnity createWithCoordinate:CGPointZero inRegion:nil];
+    [MGMapUnity createWithCoordinate:CGPointMake(0, 1) inRegion:nil];
 }
 
 -(NSImage *)viewToImage:(NSView *)m_view

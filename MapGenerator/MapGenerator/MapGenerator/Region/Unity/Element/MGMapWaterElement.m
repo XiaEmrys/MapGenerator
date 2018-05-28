@@ -111,8 +111,8 @@
         averageProbability.snowProbability = 2;
     }
     
-    if (nil == probability.northProbability) {
-        waterElement.northProbability = averageProbability;
+//    if (nil == probability.northProbability) {
+//        waterElement.northProbability = averageProbability;
         if ((MapDirectionNorth == upstreamDirection)
             ||(MapDirectionNorth == downstreamDirection)){
             waterElement.northProbability.waterProbability = ProbabilityMax;
@@ -122,9 +122,9 @@
             waterElement.northProbability.sandProbability = 0;
             waterElement.northProbability.snowProbability = 0;
         }
-    }
-    if (nil == probability.southProbability) {
-        waterElement.southProbability = averageProbability;
+//    }
+//    if (nil == probability.southProbability) {
+//        waterElement.southProbability = averageProbability;
         if ((MapDirectionSouth == upstreamDirection)
             ||(MapDirectionSouth == downstreamDirection)){
             waterElement.southProbability.waterProbability = ProbabilityMax;
@@ -134,9 +134,9 @@
             waterElement.southProbability.sandProbability = 0;
             waterElement.southProbability.snowProbability = 0;
         }
-    }
-    if (nil == probability.westProbability) {
-        waterElement.westProbability = averageProbability;
+//    }
+//    if (nil == probability.westProbability) {
+//        waterElement.westProbability = averageProbability;
         if ((MapDirectionWest == upstreamDirection)
             ||(MapDirectionWest == downstreamDirection)){
             waterElement.westProbability.waterProbability = ProbabilityMax;
@@ -146,9 +146,9 @@
             waterElement.westProbability.sandProbability = 0;
             waterElement.westProbability.snowProbability = 0;
         }
-    }
-    if (nil == probability.eastProbability) {
-        waterElement.eastProbability = averageProbability;
+//    }
+//    if (nil == probability.eastProbability) {
+//        waterElement.eastProbability = averageProbability;
         if ((MapDirectionEast == upstreamDirection)
             ||(MapDirectionEast == downstreamDirection)){
             waterElement.eastProbability.waterProbability = ProbabilityMax;
@@ -158,7 +158,7 @@
             waterElement.eastProbability.sandProbability = 0;
             waterElement.eastProbability.snowProbability = 0;
         }
-    }
+//    }
     
     return waterElement;
 }

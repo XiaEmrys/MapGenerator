@@ -19,7 +19,9 @@
 //static NSString *datasFilePath = @"/Users/emrys/Library/Containers/com.Emrys.MapGenerator/Data/Documents/__datas_0_0.element";
 //static NSString *datasFilePath = [[NSString stringWithFormat:@"%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject]] stringByAppendingPathComponent:@"TestDatas/__datas_0_0.element"];
 
-@interface MGMapUnity ()
+@interface MGMapUnity () {
+    MGMapProbability *__pro;
+}
 
 @property (nonatomic, assign) CGPoint coordinate;
 @property (nonatomic, strong) NSData *elementDatas;
@@ -66,7 +68,11 @@
         if (0 == latitude) {
             [strM appendString:@"\n"];
         }
-        [strM appendFormat:@"%zd", element.elementType];
+        if (ElementTypeWater == element.elementType) {
+            [strM appendFormat:@" "];
+        } else {
+            [strM appendFormat:@"%zd", element.elementType];
+        }
     }
     NSLog(@"%@", strM);
     [archiver finishEncoding];
@@ -145,22 +151,294 @@
     if (nil != northElement) {
         probability.northProbability = northElement.mapProbability.southProbability;
     } else {
-        probability.northProbability = nil;
+        probability.northProbability = [MGElementProbability elementProbability];
+        
+//        probability.northProbability
+        if (self.mapProbability.northProbability.altitudeRise >= self.mapProbability.southProbability.altitudeRise) {
+            probability.northProbability.altitudeRise += (self.mapProbability.averageProbability.altitudeRise/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.altitudeRise -= (self.mapProbability.averageProbability.altitudeRise/100.0)*coordinate.y;
+        }
+//        probability.northProbability
+        if (self.mapProbability.northProbability.altitudeDecline >= self.mapProbability.southProbability.altitudeDecline) {
+            probability.northProbability.altitudeDecline += (self.mapProbability.averageProbability.altitudeDecline/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.altitudeDecline -= (self.mapProbability.averageProbability.altitudeDecline/100.0)*coordinate.y;
+        }
+//        probability.northProbability
+        if (self.mapProbability.northProbability.temperatureRise >= self.mapProbability.southProbability.temperatureRise) {
+            probability.northProbability.temperatureRise += (self.mapProbability.averageProbability.temperatureRise/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.temperatureRise -= (self.mapProbability.averageProbability.temperatureRise/100.0)*coordinate.y;
+        }
+//        probability.northProbability
+        if (self.mapProbability.northProbability.temperatureDecline >= self.mapProbability.southProbability.temperatureDecline) {
+            probability.northProbability.temperatureDecline += (self.mapProbability.averageProbability.temperatureDecline/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.temperatureDecline -= (self.mapProbability.averageProbability.temperatureDecline/100.0)*coordinate.y;
+        }
+//        probability.northProbability
+        if (self.mapProbability.northProbability.humidityRise >= self.mapProbability.southProbability.humidityRise) {
+            probability.northProbability.humidityRise += (self.mapProbability.averageProbability.humidityRise/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.humidityRise -= (self.mapProbability.averageProbability.humidityRise/100.0)*coordinate.y;
+        }
+//        probability.northProbability
+        if (self.mapProbability.northProbability.humidityDecline >= self.mapProbability.southProbability.humidityDecline) {
+            probability.northProbability.humidityDecline += (self.mapProbability.averageProbability.humidityDecline/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.humidityDecline -= (self.mapProbability.averageProbability.humidityDecline/100.0)*coordinate.y;
+        }
+//
+//        probability.northProbability
+        if (self.mapProbability.northProbability.grassProbability >= self.mapProbability.southProbability.grassProbability) {
+            probability.northProbability.grassProbability += (self.mapProbability.averageProbability.grassProbability/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.grassProbability -= (self.mapProbability.averageProbability.grassProbability/100.0)*coordinate.y;
+        }
+//        probability.northProbability
+        if (self.mapProbability.northProbability.dirtProbability >= self.mapProbability.southProbability.dirtProbability) {
+            probability.northProbability.dirtProbability += (self.mapProbability.averageProbability.dirtProbability/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.dirtProbability -= (self.mapProbability.averageProbability.dirtProbability/100.0)*coordinate.y;
+        }
+//        probability.northProbability
+        if (self.mapProbability.northProbability.sandProbability >= self.mapProbability.southProbability.sandProbability) {
+            probability.northProbability.sandProbability += (self.mapProbability.averageProbability.sandProbability/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.sandProbability -= (self.mapProbability.averageProbability.sandProbability/100.0)*coordinate.y;
+        }
+//        probability.northProbability
+        if (self.mapProbability.northProbability.waterProbability >= self.mapProbability.southProbability.waterProbability) {
+            probability.northProbability.waterProbability += (self.mapProbability.averageProbability.waterProbability/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.waterProbability -= (self.mapProbability.averageProbability.waterProbability/100.0)*coordinate.y;
+        }
+//        probability.northProbability
+        if (self.mapProbability.northProbability.snowProbability >= self.mapProbability.southProbability.snowProbability) {
+            probability.northProbability.snowProbability += (self.mapProbability.averageProbability.snowProbability/100.0)*coordinate.y;
+        } else {
+            probability.northProbability.snowProbability -= (self.mapProbability.averageProbability.snowProbability/100.0)*coordinate.y;
+        }
     }
     if (nil != southElement) {
         probability.southProbability = southElement.mapProbability.northProbability;
     } else {
-        probability.southProbability = nil;
+        probability.southProbability = [MGElementProbability elementProbability];
+        
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.altitudeRise >= self.mapProbability.northProbability.altitudeRise) {
+            probability.southProbability.altitudeRise += (self.mapProbability.averageProbability.altitudeRise/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.altitudeRise -= (self.mapProbability.averageProbability.altitudeRise/100.0)*(100 - coordinate.y);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.altitudeDecline >= self.mapProbability.northProbability.altitudeDecline) {
+            probability.southProbability.altitudeDecline += (self.mapProbability.averageProbability.altitudeDecline/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.altitudeDecline -= (self.mapProbability.averageProbability.altitudeDecline/100.0)*(100 - coordinate.y);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.temperatureRise >= self.mapProbability.northProbability.temperatureRise) {
+            probability.southProbability.temperatureRise += (self.mapProbability.averageProbability.temperatureRise/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.temperatureRise -= (self.mapProbability.averageProbability.temperatureRise/100.0)*(100 - coordinate.y);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.temperatureDecline >= self.mapProbability.northProbability.temperatureDecline) {
+            probability.southProbability.temperatureDecline += (self.mapProbability.averageProbability.temperatureDecline/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.temperatureDecline -= (self.mapProbability.averageProbability.temperatureDecline/100.0)*(100 - coordinate.y);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.humidityRise >= self.mapProbability.northProbability.humidityRise) {
+            probability.southProbability.humidityRise += (self.mapProbability.averageProbability.humidityRise/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.humidityRise -= (self.mapProbability.averageProbability.humidityRise/100.0)*(100 - coordinate.y);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.humidityDecline >= self.mapProbability.northProbability.humidityDecline) {
+            probability.southProbability.humidityDecline += (self.mapProbability.averageProbability.humidityDecline/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.humidityDecline -= (self.mapProbability.averageProbability.humidityDecline/100.0)*(100 - coordinate.y);
+        }
+        //
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.grassProbability >= self.mapProbability.northProbability.grassProbability) {
+            probability.southProbability.grassProbability += (self.mapProbability.averageProbability.grassProbability/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.grassProbability -= (self.mapProbability.averageProbability.grassProbability/100.0)*(100 - coordinate.y);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.dirtProbability >= self.mapProbability.northProbability.dirtProbability) {
+            probability.southProbability.dirtProbability += (self.mapProbability.averageProbability.dirtProbability/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.dirtProbability -= (self.mapProbability.averageProbability.dirtProbability/100.0)*(100 - coordinate.y);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.sandProbability >= self.mapProbability.northProbability.sandProbability) {
+            probability.southProbability.sandProbability += (self.mapProbability.averageProbability.sandProbability/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.sandProbability -= (self.mapProbability.averageProbability.sandProbability/100.0)*(100 - coordinate.y);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.waterProbability >= self.mapProbability.northProbability.waterProbability) {
+            probability.southProbability.waterProbability += (self.mapProbability.averageProbability.waterProbability/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.waterProbability -= (self.mapProbability.averageProbability.waterProbability/100.0)*(100 - coordinate.y);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.southProbability.snowProbability >= self.mapProbability.northProbability.snowProbability) {
+            probability.southProbability.snowProbability += (self.mapProbability.averageProbability.snowProbability/100.0)*(100 - coordinate.y);
+        } else {
+            probability.southProbability.snowProbability -= (self.mapProbability.averageProbability.snowProbability/100.0)*(100 - coordinate.y);
+        }
     }
     if (nil != westElement) {
         probability.westProbability = westElement.mapProbability.eastProbability;
     } else {
-        probability.westProbability = nil;
+        probability.westProbability = [MGElementProbability elementProbability];
+        
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.altitudeRise >= self.mapProbability.eastProbability.altitudeRise) {
+            probability.westProbability.altitudeRise += (self.mapProbability.averageProbability.altitudeRise/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.altitudeRise -= (self.mapProbability.averageProbability.altitudeRise/100.0)*coordinate.x;
+        }
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.altitudeDecline >= self.mapProbability.eastProbability.altitudeDecline) {
+            probability.westProbability.altitudeDecline += (self.mapProbability.averageProbability.altitudeDecline/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.altitudeDecline -= (self.mapProbability.averageProbability.altitudeDecline/100.0)*coordinate.x;
+        }
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.temperatureRise >= self.mapProbability.eastProbability.temperatureRise) {
+            probability.westProbability.temperatureRise += (self.mapProbability.averageProbability.temperatureRise/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.temperatureRise -= (self.mapProbability.averageProbability.temperatureRise/100.0)*coordinate.x;
+        }
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.temperatureDecline >= self.mapProbability.eastProbability.temperatureDecline) {
+            probability.westProbability.temperatureDecline += (self.mapProbability.averageProbability.temperatureDecline/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.temperatureDecline -= (self.mapProbability.averageProbability.temperatureDecline/100.0)*coordinate.x;
+        }
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.humidityRise >= self.mapProbability.eastProbability.humidityRise) {
+            probability.westProbability.humidityRise += (self.mapProbability.averageProbability.humidityRise/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.humidityRise -= (self.mapProbability.averageProbability.humidityRise/100.0)*coordinate.x;
+        }
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.humidityDecline >= self.mapProbability.eastProbability.humidityDecline) {
+            probability.westProbability.humidityDecline += (self.mapProbability.averageProbability.humidityDecline/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.humidityDecline -= (self.mapProbability.averageProbability.humidityDecline/100.0)*coordinate.x;
+        }
+        //
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.grassProbability >= self.mapProbability.eastProbability.grassProbability) {
+            probability.westProbability.grassProbability += (self.mapProbability.averageProbability.grassProbability/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.grassProbability -= (self.mapProbability.averageProbability.grassProbability/100.0)*coordinate.x;
+        }
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.dirtProbability >= self.mapProbability.eastProbability.dirtProbability) {
+            probability.westProbability.dirtProbability += (self.mapProbability.averageProbability.dirtProbability/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.dirtProbability -= (self.mapProbability.averageProbability.dirtProbability/100.0)*coordinate.x;
+        }
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.sandProbability >= self.mapProbability.eastProbability.sandProbability) {
+            probability.westProbability.sandProbability += (self.mapProbability.averageProbability.sandProbability/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.sandProbability -= (self.mapProbability.averageProbability.sandProbability/100.0)*coordinate.x;
+        }
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.waterProbability >= self.mapProbability.eastProbability.waterProbability) {
+            probability.westProbability.waterProbability += (self.mapProbability.averageProbability.waterProbability/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.waterProbability -= (self.mapProbability.averageProbability.waterProbability/100.0)*coordinate.x;
+        }
+        //        probability.northProbability
+        if (self.mapProbability.westProbability.snowProbability >= self.mapProbability.eastProbability.snowProbability) {
+            probability.westProbability.snowProbability += (self.mapProbability.averageProbability.snowProbability/100.0)*coordinate.x;
+        } else {
+            probability.westProbability.snowProbability -= (self.mapProbability.averageProbability.snowProbability/100.0)*coordinate.x;
+        }
     }
     if (nil != eastElement) {
         probability.eastProbability = eastElement.mapProbability.westProbability;
     } else {
-        probability.eastProbability = nil;
+        probability.eastProbability = [MGElementProbability elementProbability];
+        
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.altitudeRise >= self.mapProbability.westProbability.altitudeRise) {
+            probability.eastProbability.altitudeRise += (self.mapProbability.averageProbability.altitudeRise/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.altitudeRise -= (self.mapProbability.averageProbability.altitudeRise/100.0)*(100 - coordinate.x);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.altitudeDecline >= self.mapProbability.westProbability.altitudeDecline) {
+            probability.eastProbability.altitudeDecline += (self.mapProbability.averageProbability.altitudeDecline/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.altitudeDecline -= (self.mapProbability.averageProbability.altitudeDecline/100.0)*(100 - coordinate.x);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.temperatureRise >= self.mapProbability.westProbability.temperatureRise) {
+            probability.eastProbability.temperatureRise += (self.mapProbability.averageProbability.temperatureRise/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.temperatureRise -= (self.mapProbability.averageProbability.temperatureRise/100.0)*(100 - coordinate.x);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.temperatureDecline >= self.mapProbability.westProbability.temperatureDecline) {
+            probability.eastProbability.temperatureDecline += (self.mapProbability.averageProbability.temperatureDecline/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.temperatureDecline -= (self.mapProbability.averageProbability.temperatureDecline/100.0)*(100 - coordinate.x);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.humidityRise >= self.mapProbability.westProbability.humidityRise) {
+            probability.eastProbability.humidityRise += (self.mapProbability.averageProbability.humidityRise/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.humidityRise -= (self.mapProbability.averageProbability.humidityRise/100.0)*(100 - coordinate.x);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.humidityDecline >= self.mapProbability.westProbability.humidityDecline) {
+            probability.eastProbability.humidityDecline += (self.mapProbability.averageProbability.humidityDecline/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.humidityDecline -= (self.mapProbability.averageProbability.humidityDecline/100.0)*(100 - coordinate.x);
+        }
+        //
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.grassProbability >= self.mapProbability.westProbability.grassProbability) {
+            probability.eastProbability.grassProbability += (self.mapProbability.averageProbability.grassProbability/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.grassProbability -= (self.mapProbability.averageProbability.grassProbability/100.0)*(100 - coordinate.x);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.dirtProbability >= self.mapProbability.westProbability.dirtProbability) {
+            probability.eastProbability.dirtProbability += (self.mapProbability.averageProbability.dirtProbability/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.dirtProbability -= (self.mapProbability.averageProbability.dirtProbability/100.0)*(100 - coordinate.x);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.sandProbability >= self.mapProbability.westProbability.sandProbability) {
+            probability.eastProbability.sandProbability += (self.mapProbability.averageProbability.sandProbability/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.sandProbability -= (self.mapProbability.averageProbability.sandProbability/100.0)*(100 - coordinate.x);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.waterProbability >= self.mapProbability.westProbability.waterProbability) {
+            probability.eastProbability.waterProbability += (self.mapProbability.averageProbability.waterProbability/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.waterProbability -= (self.mapProbability.averageProbability.waterProbability/100.0)*(100 - coordinate.x);
+        }
+        //        probability.northProbability
+        if (self.mapProbability.eastProbability.snowProbability >= self.mapProbability.westProbability.snowProbability) {
+            probability.eastProbability.snowProbability += (self.mapProbability.averageProbability.snowProbability/100.0)*(100 - coordinate.x);
+        } else {
+            probability.eastProbability.snowProbability -= (self.mapProbability.averageProbability.snowProbability/100.0)*(100 - coordinate.x);
+        }
     }
 
     
@@ -393,6 +671,9 @@
     MapDirection altitudeDeclineMaximalDirection = MapDirectionUnknown;
     MGProbability altitudeDeclineMaximal = 0;
     
+    // 取上游方向
+    MapDirection upstreamDirection = [self upstreamDirectionOfRiverWithElementCoordinate:coordinate];
+    
     MGMapProbability *probability = [self probabilityWithElementCoordinate:coordinate];
     
     MGBasicElement *eastElement = [self eastElementWithElementCoordinate:coordinate];
@@ -405,8 +686,10 @@
         }
     } else {
 //        return MapDirectionEast;
-        altitudeDeclineMaximal = probability.eastProbability.altitudeDecline;
-        altitudeDeclineMaximalDirection = MapDirectionEast;
+        if (MapDirectionEast != upstreamDirection) {
+            altitudeDeclineMaximal = probability.eastProbability.altitudeDecline;
+            altitudeDeclineMaximalDirection = MapDirectionEast;
+        }
     }
     MGBasicElement *westElement = [self westElementWithElementCoordinate:coordinate];
     if (nil != westElement) {
@@ -419,8 +702,10 @@
     } else {
 //        return MapDirectionWest;
         if (probability.westProbability.altitudeDecline > altitudeDeclineMaximal) {
-            altitudeDeclineMaximal = probability.westProbability.altitudeDecline;
-            altitudeDeclineMaximalDirection = MapDirectionWest;
+            if (MapDirectionWest != upstreamDirection) {
+                altitudeDeclineMaximal = probability.westProbability.altitudeDecline;
+                altitudeDeclineMaximalDirection = MapDirectionWest;
+            }
         }
     }
     MGBasicElement *southElement = [self southElementWithElementCoordinate:coordinate];
@@ -434,8 +719,10 @@
     } else {
 //        return MapDirectionSouth;
         if (probability.southProbability.altitudeDecline > altitudeDeclineMaximal) {
-            altitudeDeclineMaximal = probability.southProbability.altitudeDecline;
-            altitudeDeclineMaximalDirection = MapDirectionSouth;
+            if (MapDirectionSouth != upstreamDirection) {
+                altitudeDeclineMaximal = probability.southProbability.altitudeDecline;
+                altitudeDeclineMaximalDirection = MapDirectionSouth;
+            }
         }
     }
     MGBasicElement *northElement = [self northElementWithElementCoordinate:coordinate];
@@ -449,8 +736,10 @@
     } else {
 //        return MapDirectionNorth;
         if (probability.northProbability.altitudeDecline > altitudeDeclineMaximal) {
-            altitudeDeclineMaximal = probability.northProbability.altitudeDecline;
-            altitudeDeclineMaximalDirection = MapDirectionNorth;
+            if (MapDirectionNorth != upstreamDirection) {
+                altitudeDeclineMaximal = probability.northProbability.altitudeDecline;
+                altitudeDeclineMaximalDirection = MapDirectionNorth;
+            }
         }
     }
     
@@ -485,6 +774,17 @@
     } else {
         return nil;
     }
+}
+
+#pragma mark - get
+- (MGMapProbability *)mapProbability {
+    
+    if (nil == __pro) {
+        MGMapProbability *mapProbability = [MGMapProbability mapProbability];
+        
+        __pro = mapProbability;
+    }
+    return __pro;
 }
 
 @end

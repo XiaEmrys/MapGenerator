@@ -140,7 +140,12 @@
         &&(0 == averageProbability.sandProbability)
         &&(0 == averageProbability.waterProbability)
         &&(0 == averageProbability.snowProbability)) {
-        NSLog(@"err");
+//        NSLog(@"err");
+        averageProbability.grassProbability = 90;
+        averageProbability.dirtProbability = 10;
+        averageProbability.sandProbability = 10;
+        averageProbability.waterProbability = 10;
+        averageProbability.snowProbability = 0;
     }
     
     return averageProbability;
