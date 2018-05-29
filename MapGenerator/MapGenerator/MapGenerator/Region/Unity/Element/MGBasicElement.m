@@ -159,15 +159,15 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
     
     MGElementProbability *averageProbability = probability.averageProbability;
     
-    if (arc4random_uniform(100) < averageProbability.grassProbability) {
+    if (arc4random_uniform(ProbabilityMax) < averageProbability.grassProbability) {
         return ElementTypeGrass;
-    } else if (arc4random_uniform(100) < averageProbability.dirtProbability) {
+    } else if (arc4random_uniform(ProbabilityMax) < averageProbability.dirtProbability) {
         return ElementTypeDirt;
-    } else if (arc4random_uniform(100) < averageProbability.sandProbability) {
+    } else if (arc4random_uniform(ProbabilityMax) < averageProbability.sandProbability) {
         return ElementTypeSand;
-    } else if (arc4random_uniform(100) < averageProbability.waterProbability) {
+    } else if (arc4random_uniform(ProbabilityMax) < averageProbability.waterProbability) {
         return ElementTypeWater;
-    } else if (arc4random_uniform(100) < averageProbability.snowProbability) {
+    } else if (arc4random_uniform(ProbabilityMax) < averageProbability.snowProbability) {
         return ElementTypeSnow;
     } else {
 //        NSLog(@"%d", averageProbability.grassProbability);
@@ -231,9 +231,9 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
 // 通过概率计算海拔上升还是下降
 + (ElementAltitudeTendency)altitudeTendencyRise:(MGProbability)rise decline:(MGProbability)decline {
     
-    if (arc4random_uniform(100) < rise) {
+    if (arc4random_uniform(ProbabilityMax) < rise) {
         return ElementAltitudeRise;
-    } else if (arc4random_uniform(100) < decline) {
+    } else if (arc4random_uniform(ProbabilityMax) < decline) {
         return ElementAltitudeDecline;
     } else {
         return ElementAltitudeInvariable;
@@ -258,9 +258,9 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
 // 通过概率计算温度上升还是下降
 + (ElementTemperatureTendency)temperatureTendencyRise:(MGProbability)rise decline:(MGProbability)decline {
     
-    if (arc4random_uniform(100) < rise) {
+    if (arc4random_uniform(ProbabilityMax) < rise) {
         return ElementTemperatureRise;
-    } else if (arc4random_uniform(100) < decline) {
+    } else if (arc4random_uniform(ProbabilityMax) < decline) {
         return ElementTemperatureDecline;
     } else {
         return ElementTemperatureInvariable;
@@ -286,9 +286,9 @@ typedef NS_ENUM(NSUInteger, ElementHumidityTendency) {
 // 通过概率计算湿度上升还是下降
 + (ElementHumidityTendency)humidityTendencyRise:(MGProbability)rise decline:(MGProbability)decline {
     
-    if (arc4random_uniform(100) < rise) {
+    if (arc4random_uniform(ProbabilityMax) < rise) {
         return ElementHumidityRise;
-    } else if (arc4random_uniform(100) < decline) {
+    } else if (arc4random_uniform(ProbabilityMax) < decline) {
         return ElementHumidityDecline;
     } else {
         return ElementHumidityInvariable;
